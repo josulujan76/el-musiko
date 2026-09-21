@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" data-estilo="Rock">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Musiko</title>
+  <link rel="stylesheet" href="style.css?v=musiko-pages2">
+</head>
+<body>
+  <div class="app">
+    <div class="escenario">
+    <div id="pantalla1" class="pantalla visible">
+      <p class="marca">EL MUSIKO</p>
+      <button id="btn-audio" class="btn btn-secundario" type="button" onclick="alternarAudio()" style="margin-bottom:10px">AUDIO: ON</button>
+      <h1>Nueva carrera</h1>
+      <div class="tarjeta">
+        <div id="bloque-continuar" class="campo" style="display:none">
+          <button class="btn btn-principal" type="button" onclick="continuarPartida()">CONTINUAR PARTIDA</button>
+          <p class="muted" id="resumen-partida-guardada" style="margin-top:8px"></p>
+        </div>
+        <div class="campo">
+          <label for="nacionalidad">Nacionalidad</label>
+          <select id="nacionalidad"><option value="Argentina">Argentina</option></select>
+        </div>
+        <div class="campo">
+          <label>Estilo musical</label>
+          <input type="hidden" id="estilo" value="Rock">
+          <div class="ritmo">
+            <button type="button" class="opcion-ritmo opcion-estilo activo" data-estilo="Rock" onclick="elegirEstilo('Rock')">Rock</button>
+            <button type="button" class="opcion-ritmo opcion-estilo" data-estilo="Pop" onclick="elegirEstilo('Pop')">Pop</button>
+            <button type="button" class="opcion-ritmo opcion-estilo" data-estilo="Cumbia" onclick="elegirEstilo('Cumbia')">Cumbia</button>
+            <button type="button" class="opcion-ritmo opcion-estilo" data-estilo="Reggae" onclick="elegirEstilo('Reggae')">Reggae</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Ritmo</label>
+          <input type="hidden" id="modo" value="Normal">
+          <div class="ritmo">
+            <button type="button" class="opcion-ritmo activo" data-modo="Normal" onclick="elegirModo('Normal')">Normal<small>Avanza de a 2 años</small></button>
+            <button type="button" class="opcion-ritmo" data-modo="Intenso" onclick="elegirModo('Intenso')">Intenso<small>Avanza de a 1 año</small></button>
+          </div>
+        </div>
+        <div class="acciones">
+          <button class="btn btn-principal" onclick="irACrearMusico()">SIGUIENTE</button>
+        </div>
+      </div>
+    </div>
+    <div id="pantalla2" class="pantalla">
+      <p class="marca">EL MUSIKO</p>
+      <h1>Creá tu músico</h1>
+      <div class="tarjeta">
+        <div class="campo">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre">
+        </div>
+        <div class="campo">
+          <label>Instrumento</label>
+          <input type="hidden" id="instrumento" value="">
+          <div id="opciones-instrumento" class="ritmo"></div>
+        </div>
+        <div class="acciones">
+          <button class="btn btn-secundario" onclick="volverInicio()">VOLVER</button>
+          <button class="btn btn-principal" onclick="comenzarCarrera()">COMENZAR CARRERA</button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <script src="game.js?v=musiko-pages2"></script>
+</body>
+</html>

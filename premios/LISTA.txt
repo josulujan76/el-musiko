@@ -1,0 +1,57 @@
+Premios de Carrera Musical
+==========================
+Poné acá un PNG transparente (sin fondo) con el nombre de archivo exacto.
+
+UNDER
+- Batalla de bandas de la ciudad
+  premios/batalla-de-bandas-de-la-ciudad.png
+- Revelación de radio FM
+  premios/revelacion-de-radio-fm.png
+- Mejor artista del circuito independiente
+  premios/mejor-artista-del-circuito-independiente.png
+
+REGIONAL
+- Premio Gardel · Mejor nuevo artista
+  premios/premio-gardel-mejor-nuevo-artista.png
+- Disco de oro
+  premios/disco-de-oro.png
+- N.º 1 más escuchado en Spotify
+  premios/n-1-mas-escuchado-en-spotify.png
+- N.º 1 videoclip de YouTube
+  premios/n-1-videoclip-de-youtube.png
+- Gaviota de Plata (Viña del Mar)
+  premios/gaviota-de-plata-vina-del-mar.png
+
+NACIONAL
+- Gardel de Oro
+  premios/gardel-de-oro.png
+- Premio Gardel · Canción del año
+  premios/premio-gardel-cancion-del-ano.png
+- Disco de platino
+  premios/disco-de-platino.png
+- Gaviota de Oro (Viña del Mar)
+  premios/gaviota-de-oro-vina-del-mar.png
+
+INTERNACIONAL
+- Latin Grammy
+  premios/latin-grammy.png
+- MTV EMA
+  premios/mtv-ema.png
+- Billboard Latin Music Award
+  premios/billboard-latin-music-award.png
+- Multiplatino
+  premios/multiplatino.png
+
+LEYENDA
+- Grammy
+  premios/grammy.png
+- Disco de diamante
+  premios/disco-de-diamante.png
+- Polar Music Prize
+  premios/polar-music-prize.png
+- Latin Grammy Persona del Año
+  premios/latin-grammy-persona-del-ano.png
+
+RESPALDO
+- premios/default.png
+  (si falta algún archivo se usa este)
