@@ -1127,7 +1127,7 @@ function opcionSorteo(texto, chanceBuena, resultadoBueno, resultadoMalo, etiquet
     chanceBuena: chanceBuena,
     resultadoBueno: resultadoBueno,
     resultadoMalo: resultadoMalo,
-    etiqueta: etiqueta || "A suerte"
+    etiqueta: etiqueta || ""
   };
 }
 
@@ -1156,8 +1156,9 @@ function extraGral(opcion) {
 }
 
 
-// Estilo Copero: en el botón solo se ve el cambio concreto (rol, shows, irse…).
-// GRAL / fans / % quedan detrás de escena y no se listan.
+// Estilo Copero: acción arriba, abajo solo el detalle corto.
+// Ej: "GRAL +3"  |  "GRAL +3 / GRAL -4"  |  "Salís de la banda"
+// Sin fans, % ovaciones ni textos largos mezclados.
 function textoEfecto(opcion) {
   if (!opcion) {
     return "";
@@ -1169,21 +1170,26 @@ function textoEfecto(opcion) {
 
   const partes = [];
   const m = opcion.modificadores || modificadoresVacios();
+  const gral = m.cambioGralExtra || 0;
+
+  if (gral !== 0) {
+    partes.push("GRAL " + (gral > 0 ? "+" : "") + gral);
+  }
 
   if (opcion.rol) {
     partes.push(opcion.rol);
   }
 
   if (opcion.descenso) {
-    partes.push("Bajás de categoría");
+    partes.push("Descenso");
   }
 
   if (opcion.separacion) {
-    partes.push("Salís de la banda");
+    partes.push("Salís");
   }
 
   if (opcion.volverOrigen) {
-    partes.push("Volvés a origen");
+    partes.push("Volvés");
   }
 
   if (m.showsFactor && m.showsFactor < 1) {
@@ -1191,8 +1197,6 @@ function textoEfecto(opcion) {
   } else if (m.showsFactor && m.showsFactor > 1) {
     partes.push("Más shows");
   }
-
-  // Soft stats (gral/fans/ovaciones/premio) intencionalmente ocultos.
 
   return partes.join(" · ");
 }
@@ -1208,7 +1212,19 @@ function formatearEfectos(opcion) {
   }
 
   if (opcion.sorteo) {
-    return "A suerte";
+    const gBueno = extraGral(opcion.resultadoBueno);
+    const gMalo = extraGral(opcion.resultadoMalo);
+    if (gBueno !== 0 || gMalo !== 0) {
+      const a = "GRAL " + (gBueno > 0 ? "+" : "") + gBueno;
+      const b = "GRAL " + (gMalo > 0 ? "+" : "") + gMalo;
+      return a + " / " + b;
+    }
+    const bueno = textoEfecto(opcion.resultadoBueno);
+    const malo = textoEfecto(opcion.resultadoMalo);
+    if (bueno && malo) {
+      return bueno + " / " + malo;
+    }
+    return bueno || malo || "A suerte";
   }
 
   return textoEfecto(opcion);
@@ -1767,13 +1783,11 @@ const eventos = [
     prioridadCansancio: true,
     opcionA: {
       texto: "Fisio + técnica",
-      etiqueta: "Cuidás el cuerpo",
       modificadores: { bonusOvaciones: 0.04, fansExtra: 200, cambioGralExtra: 2, cansancioDelta: -1 },
       postEfecto: function () { jugador.cooldownTendinitis = 3; }
     },
     opcionB: {
       texto: "Bajar shows",
-      etiqueta: "Menos shows este bienio",
       modificadores: { showsFactor: 0.7, bonusOvaciones: 0.02, fansExtra: 100, cambioGralExtra: 1, cansancioDelta: -1 },
       postEfecto: function () { jugador.cooldownTendinitis = 2; }
     },
