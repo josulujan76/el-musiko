@@ -1120,13 +1120,14 @@ function signoNumero(valor) {
 }
 
 
-function opcionSorteo(texto, chanceBuena, resultadoBueno, resultadoMalo) {
+function opcionSorteo(texto, chanceBuena, resultadoBueno, resultadoMalo, etiqueta) {
   return {
     texto: texto,
     sorteo: true,
     chanceBuena: chanceBuena,
     resultadoBueno: resultadoBueno,
-    resultadoMalo: resultadoMalo
+    resultadoMalo: resultadoMalo,
+    etiqueta: etiqueta || "A suerte"
   };
 }
 
@@ -1155,55 +1156,43 @@ function extraGral(opcion) {
 }
 
 
+// Estilo Copero: en el botón solo se ve el cambio concreto (rol, shows, irse…).
+// GRAL / fans / % quedan detrás de escena y no se listan.
 function textoEfecto(opcion) {
+  if (!opcion) {
+    return "";
+  }
+
+  if (opcion.etiqueta) {
+    return opcion.etiqueta;
+  }
+
   const partes = [];
-  const m = (opcion && opcion.modificadores) || modificadoresVacios();
-  const gral = m.cambioGralExtra || 0;
+  const m = opcion.modificadores || modificadoresVacios();
 
-  if (gral !== 0) {
-    partes.push(signoNumero(gral) + " GRAL");
-  }
-
-  if (m.fansExtra) {
-    partes.push(signoNumero(m.fansExtra) + " fans");
-  }
-
-  if (m.bonusOvaciones) {
-    const pct = Math.round(Math.abs(m.bonusOvaciones) * 100);
-    partes.push((m.bonusOvaciones > 0 ? "+" : "-") + pct + "% ovaciones");
-  }
-
-  if (m.chancePremioExtra) {
-    partes.push("+" + Math.round(m.chancePremioExtra * 100) + "% premio");
-  }
-
-  if (m.showsFactor && m.showsFactor !== 1) {
-    partes.push("shows x" + m.showsFactor);
-  }
-
-  if (opcion && opcion.rol) {
+  if (opcion.rol) {
     partes.push(opcion.rol);
   }
 
-  if (opcion && opcion.descenso) {
-    partes.push("descenso");
+  if (opcion.descenso) {
+    partes.push("Bajás de categoría");
   }
 
-  if (opcion && opcion.separacion) {
-    partes.push("salís");
+  if (opcion.separacion) {
+    partes.push("Salís de la banda");
   }
 
-  if (opcion && opcion.volverOrigen) {
-    partes.push("volvés");
+  if (opcion.volverOrigen) {
+    partes.push("Volvés a origen");
   }
 
-  if (opcion && opcion.postEfecto && !partes.length) {
-    // postEfecto solo (ej. cooldown): no inventar números
+  if (m.showsFactor && m.showsFactor < 1) {
+    partes.push("Menos shows");
+  } else if (m.showsFactor && m.showsFactor > 1) {
+    partes.push("Más shows");
   }
 
-  if (partes.length === 0) {
-    return "sin cambio";
-  }
+  // Soft stats (gral/fans/ovaciones/premio) intencionalmente ocultos.
 
   return partes.join(" · ");
 }
@@ -1211,18 +1200,15 @@ function textoEfecto(opcion) {
 
 function formatearEfectos(opcion) {
   if (!opcion) {
-    return "sin cambio";
+    return "";
+  }
+
+  if (opcion.etiqueta) {
+    return opcion.etiqueta;
   }
 
   if (opcion.sorteo) {
-    const bien = Math.round((opcion.chanceBuena || 0.5) * 100);
-
-    return (
-      bien + "/" + (100 - bien) + " · " +
-      textoEfecto(opcion.resultadoBueno) +
-      " / " +
-      textoEfecto(opcion.resultadoMalo)
-    );
+    return "A suerte";
   }
 
   return textoEfecto(opcion);
@@ -1781,11 +1767,13 @@ const eventos = [
     prioridadCansancio: true,
     opcionA: {
       texto: "Fisio + técnica",
+      etiqueta: "Cuidás el cuerpo",
       modificadores: { bonusOvaciones: 0.04, fansExtra: 200, cambioGralExtra: 2, cansancioDelta: -1 },
       postEfecto: function () { jugador.cooldownTendinitis = 3; }
     },
     opcionB: {
       texto: "Bajar shows",
+      etiqueta: "Menos shows este bienio",
       modificadores: { showsFactor: 0.7, bonusOvaciones: 0.02, fansExtra: 100, cambioGralExtra: 1, cansancioDelta: -1 },
       postEfecto: function () { jugador.cooldownTendinitis = 2; }
     },
@@ -1799,7 +1787,7 @@ const eventos = [
       },
       {
         texto: "Te quebrás y el cuerpo te cobra la factura.",
-        modificadores: { bonusOvaciones: -0.08, fansExtra: 40, cambioGralExtra: -4, cansancioDelta: 4 },
+        modificadores: { bonusOvaciones: -0.08, fansExtra: 40, cambioGralExtra: -4, cansancioDelta: 4, showsFactor: 0.6 },
         postEfecto: function () { jugador.cooldownTendinitis = 3; }
       }
     )
@@ -2819,10 +2807,15 @@ function botonOpcionEvento(letra, opcion, secundario) {
 
   const clase = secundario ? "btn btn-secundario" : "btn";
 
+  const efecto = formatearEfectos(opcion);
+  const lineaEfecto = efecto
+    ? `<small class="efecto">${efecto}</small>`
+    : "";
+
   return `
     <button class="${clase}" onclick="elegirOpcionEvento('${letra}')">
       ${opcion.texto}
-      <small class="efecto">${formatearEfectos(opcion)}</small>
+      ${lineaEfecto}
     </button>
   `;
 }
