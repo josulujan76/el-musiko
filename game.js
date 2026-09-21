@@ -53,6 +53,8 @@ let jugador = {
 
 
 
+let pendienteAnimarEtapa = false;
+
 const CLAVE_AUDIO_MUTE = "el-musiko-audio-mute";
 let audioCtx = null;
 let audioMute = false;
@@ -1665,13 +1667,13 @@ function renderLineaTiempo() {
   } else {
     jugador.historial.forEach((etapa, indice) => {
       const partes = desglosarLogro(etapa.logro);
-      const activa =
-        indice === jugador.historial.length - 1
-          ? " etapa-activa"
-          : "";
+      const esUltima = indice === jugador.historial.length - 1;
+      const activa = esUltima ? " etapa-activa" : "";
+      const nueva =
+        esUltima && pendienteAnimarEtapa ? " etapa-nueva" : "";
 
       filas += `
-        <tr class="${activa}">
+        <tr class="${activa}${nueva}">
           <td>${etapa.edad}</td>
           <td>
             <span class="col-banda">
@@ -2965,6 +2967,12 @@ function pintarCuerpo(html, alListo) {
   function despuesDePintar() {
     scrollearLineaTiempoAlFinal();
     actualizarBotonMute();
+    if (pendienteAnimarEtapa) {
+      // deja correr la animación y limpia el flag
+      setTimeout(function () {
+        pendienteAnimarEtapa = false;
+      }, 700);
+    }
     if (alListo) {
       alListo();
     }
@@ -3702,6 +3710,7 @@ jugador.fans +=
     jugador.carreraTerminada = true;
   }
 
+  pendienteAnimarEtapa = true;
   mostrarPantallaPrincipal();
 }
 
@@ -3894,6 +3903,33 @@ function cambiarBanda(nombre, reputacion) {
 }
 
 
+
+function htmlStickersEstilo() {
+  const estilo = jugador.estilo || "Rock";
+  const packs = {
+    Rock: ["🎸", "🤘", "⚡", "🔥", "🖤", "🎤"],
+    Pop: ["✨", "💖", "🌟", "💿", "👑", "🎧"],
+    Cumbia: ["🪗", "🟡", "🎉", "🕺", "💛", "🎺"],
+    Reggae: ["🌴", "🟢", "☀", "🟡", "🔴", "☮"]
+  };
+  const icons = packs[estilo] || packs.Rock;
+  return (
+    '<div class="stickers" aria-hidden="true">' +
+    icons
+      .map(function (icono, i) {
+        return (
+          '<span class="sticker sticker-' +
+          (i + 1) +
+          '">' +
+          icono +
+          "</span>"
+        );
+      })
+      .join("") +
+    "</div>"
+  );
+}
+
 function mostrarPantallaPrincipal() {
   /* cansancio off */
   jugador.cansancio = 0;
@@ -4063,6 +4099,7 @@ function mostrarPantallaPrincipal() {
 
   pintarCuerpo(`
     <div class="app app-carrera">
+      ${htmlStickersEstilo()}
       <p class="marca">EL MUSIKO</p>
 
       <div class="carrera-grid">

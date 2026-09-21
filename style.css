@@ -1037,3 +1037,126 @@ button.opcion-ritmo.activo {
   font-size: 14px;
   margin-right: 4px;
 }
+
+
+/* --- Escenario blur en menú --- */
+.app:not(.app-carrera)::before,
+.escenario::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(8, 6, 6, 0.55), rgba(8, 6, 6, 0.82)),
+    url("assets/escenario.png") center / cover no-repeat;
+  filter: blur(0px);
+  transform: scale(1.06);
+  opacity: 0.9;
+}
+
+.app:not(.app-carrera) > *,
+.escenario > * {
+  position: relative;
+  z-index: 1;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.72)),
+    url("assets/escenario.png") center / cover no-repeat;
+  filter: blur(10px);
+  transform: scale(1.08);
+  opacity: 0.55;
+}
+
+/* --- Animación renglón nuevo --- */
+@keyframes etapa-entra {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+  55% {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    background: transparent;
+  }
+}
+
+.tabla-anos tr.etapa-nueva td {
+  animation: etapa-entra 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tabla-anos tr.etapa-nueva.etapa-activa td {
+  animation-name: etapa-entra-activa;
+}
+
+@keyframes etapa-entra-activa {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+/* --- Stickers por estilo --- */
+.app-carrera {
+  position: relative;
+  overflow: hidden;
+}
+
+.app-carrera .stickers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.app-carrera .carrera-grid,
+.app-carrera .marca,
+.app-carrera > *:not(.stickers) {
+  position: relative;
+  z-index: 1;
+}
+
+.sticker {
+  position: absolute;
+  font-size: 28px;
+  line-height: 1;
+  opacity: 0.16;
+  filter: grayscale(0.15) contrast(1.05);
+  user-select: none;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.sticker-1 { top: 8%; left: 4%; transform: rotate(-18deg); font-size: 34px; }
+.sticker-2 { top: 22%; right: 6%; transform: rotate(14deg); font-size: 30px; }
+.sticker-3 { top: 48%; left: 2%; transform: rotate(8deg); font-size: 26px; }
+.sticker-4 { bottom: 18%; right: 4%; transform: rotate(-12deg); font-size: 32px; }
+.sticker-5 { bottom: 8%; left: 12%; transform: rotate(20deg); font-size: 24px; }
+.sticker-6 { top: 70%; right: 14%; transform: rotate(-8deg); font-size: 28px; }
+
+[data-estilo="Rock"] .sticker { opacity: 0.18; }
+[data-estilo="Pop"] .sticker { opacity: 0.2; filter: saturate(1.2); }
+[data-estilo="Cumbia"] .sticker { opacity: 0.2; filter: saturate(1.25); }
+[data-estilo="Reggae"] .sticker { opacity: 0.18; }
+
+@media (max-width: 900px) {
+  .sticker { opacity: 0.1; font-size: 22px; }
+  .sticker-3, .sticker-5 { display: none; }
+}
