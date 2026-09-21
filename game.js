@@ -1133,9 +1133,21 @@ function opcionSorteo(texto, chanceBuena, resultadoBueno, resultadoMalo, etiquet
 
 
 function seguirComoSiempre() {
+  // Compat: ya no es "no hacer nada". Quedarte al margen cuesta un poco.
+  return quedarteAlMargen();
+}
+
+function quedarteAlMargen() {
   return {
-    texto: "Seguir como siempre",
-    modificadores: modificadoresVacios()
+    texto: "No te metés",
+    modificadores: { cambioGralExtra: -1 }
+  };
+}
+
+function bancarElMomento() {
+  return {
+    texto: "Bancar el momento",
+    modificadores: { cambioGralExtra: 1 }
   };
 }
 
@@ -1743,7 +1755,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.04, fansExtra: 100, cambioGralExtra: -2, cansancioDelta: 3 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "La gira se estira: más escenarios, menos sueño.",
@@ -1759,7 +1771,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.04, fansExtra: 200, cambioGralExtra: -3, cansancioDelta: 3 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Te ofrecen una colaboración con un artista más grande.",
@@ -1775,7 +1787,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.02, fansExtra: 200, cambioGralExtra: -1 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     id: "tendinitis",
@@ -1822,7 +1834,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.03, fansExtra: 50, cambioGralExtra: -1 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Arman una competencia pop y tu banda quedó en la grilla.",
@@ -1840,7 +1852,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.03, fansExtra: 50, cambioGralExtra: -1 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Costa Cannabis busca la mejor banda del encuentro.",
@@ -1858,7 +1870,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.03, fansExtra: 50, cambioGralExtra: -1 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Se arma una batalla de barrios y tu zona te pide que subas.",
@@ -1876,7 +1888,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.03, fansExtra: 50, cambioGralExtra: -1 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "El corte puede pelear el N.º 1 en Spotify o el videoclip más visto de YouTube.",
@@ -1893,7 +1905,7 @@ const eventos = [
         modificadores: { fansExtra: 100, cambioGralExtra: -1 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Te llaman al Festival de Viña del Mar.",
@@ -1910,7 +1922,7 @@ const eventos = [
         modificadores: { cambioGralExtra: -2, cansancioDelta: 2 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Suena tu nombre en las nominaciones a los Premios Gardel.",
@@ -1927,7 +1939,7 @@ const eventos = [
         modificadores: { cambioGralExtra: -2, cansancioDelta: 1 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "La academia latina te mete en los Latin Grammy.",
@@ -1944,7 +1956,7 @@ const eventos = [
         modificadores: { cambioGralExtra: -2 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Suena tu nombre en las nominaciones al Grammy.",
@@ -1961,7 +1973,7 @@ const eventos = [
         modificadores: { cambioGralExtra: -2 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "El disco nuevo sale flojo y la prensa lo parte.",
@@ -1979,7 +1991,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.06, fansExtra: -400, cambioGralExtra: -2 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "El de al lado no llega: te ofrecen cubrir todos los shows.",
@@ -2028,7 +2040,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.04, fansExtra: -200, cambioGralExtra: -2, cansancioDelta: 2 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Te llaman a un programa de TV. Es exposición, y también un circo.",
@@ -2044,7 +2056,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.03, fansExtra: 200, cambioGralExtra: -2 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "En el after te ofrecen una sustancia misteriosa.",
@@ -2060,7 +2072,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.04, fansExtra: -500, cambioGralExtra: -4, cansancioDelta: 2 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "El público te silba y en la banda ya no te bancan.",
@@ -2131,7 +2143,7 @@ const eventos = [
         modificadores: { fansExtra: -100, cambioGralExtra: -2, cansancioDelta: 2 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Quieren grabar el EP en un living, 4 canales, de madrugada.",
@@ -2148,7 +2160,7 @@ const eventos = [
         modificadores: { cambioGralExtra: -1, cansancioDelta: 2 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Te ofrecen telonear a una banda más grande. El cachet es birra.",
@@ -2165,7 +2177,7 @@ const eventos = [
         modificadores: { cambioGralExtra: -1, cansancioDelta: 1 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "El titular se lesiona en el soundcheck y te miran a vos.",
@@ -2184,7 +2196,7 @@ const eventos = [
         modificadores: { cambioGralExtra: -1, cansancioDelta: 1 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     texto: "Faltás a un ensayo clave y arman la lista sin vos.",
@@ -2220,7 +2232,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.04, fansExtra: 40, cambioGralExtra: -2, cansancioDelta: 2 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     id: "cover-polemico",
@@ -2257,7 +2269,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.02, fansExtra: 60, cambioGralExtra: -1, cansancioDelta: 3 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     id: "festival-cancelado",
@@ -2358,7 +2370,7 @@ const eventos = [
         modificadores: { bonusOvaciones: -0.04, fansExtra: 120, cambioGralExtra: -1 }
       }
     ),
-    opcionB: seguirComoSiempre()
+    opcionB: bancarElMomento()
   },
   {
     id: "equipo-robado",
@@ -2460,7 +2472,18 @@ const eventos = [
         modificadores: { cambioGralExtra: -2, bonusOvaciones: -0.03, cansancioDelta: 2 }
       }
     ),
-    opcionB: seguirComoSiempre(),
+    opcionB: opcionSorteo(
+      "Bancarle a uno",
+      0.50,
+      {
+        texto: "Tu bando gana y te deben una.",
+        modificadores: { cambioGralExtra: 2, fansExtra: 150 }
+      },
+      {
+        texto: "Apostaste mal y el clima se pone pesado.",
+        modificadores: { cambioGralExtra: -2, bonusOvaciones: -0.03 }
+      }
+    ),
     opcionC: opcionIrseDeBanda()
   },
   {
@@ -2472,7 +2495,10 @@ const eventos = [
       rol: "Titular",
       modificadores: { cambioGralExtra: 2, cansancioDelta: -1 }
     },
-    opcionB: seguirComoSiempre()
+    opcionB: {
+      texto: "Te quedás donde estás",
+      modificadores: { cambioGralExtra: 1 }
+    }
   }
 ];
 
