@@ -3157,7 +3157,7 @@ function obtenerOfertas() {
   if (candidatas.length < 2) {
     const respaldo = disponibles
       .filter(banda =>
-        Math.abs(jugador.gral - banda.exigencia) <= 15
+        banda.exigencia <= jugador.gral + 10
       )
       .sort(() => Math.random() - 0.5);
 
@@ -3173,8 +3173,11 @@ function obtenerOfertas() {
   }
 
   if (candidatas.length < 2) {
-    const resto =
-      [...disponibles].sort(() => Math.random() - 0.5);
+    const resto = disponibles
+      .filter(banda =>
+        jugador.gral + 8 >= banda.exigencia
+      )
+      .sort(() => Math.random() - 0.5);
 
     resto.forEach(banda => {
       const yaEsta = candidatas.some(
@@ -3592,8 +3595,9 @@ jugador.solos += solosBienio;
     cambioGral -= 1;
   }
 
-  if (intenso) {
-    cambioGral *= 0.55;
+  // Escala suave solo en modo Intenso (1 año); bienio queda en 1.0
+  if (anios === 1) {
+    cambioGral *= 0.85;
   }
 
   if (
@@ -3612,6 +3616,25 @@ jugador.solos += solosBienio;
   }
 
   cambioGral = Math.round(cambioGral);
+
+  // Piso suave: temporada mediocre+ no se queda en 0 GRAL (salvo cerca del techo)
+  if (
+    cambioGral === 0 &&
+    jugador.gral < 90 &&
+    (rendimiento >= 0.35 || ovacionesBienio >= 1)
+  ) {
+    cambioGral = 1;
+  }
+  if (
+    cambioGral < 1 &&
+    jugador.edad < 28 &&
+    (jugador.reputacionBandaActual === "Under" ||
+      jugador.reputacionBandaActual === "Regional") &&
+    rendimiento >= 0.55 &&
+    jugador.gral < 90
+  ) {
+    cambioGral = 1;
+  }
 
   // Techo blando cerca del potencial
   if (jugador.gral >= potencialCarrera - 1 && cambioGral > 1) {
@@ -3941,10 +3964,10 @@ function cambiarBanda(nombre, reputacion) {
 function htmlStickersEstilo() {
   const estilo = jugador.estilo || "Rock";
   const packs = {
-    Rock: ["🎸", "🤘", "⚡", "🔥", "🖤", "🎤"],
-    Pop: ["✨", "💖", "🌟", "💿", "👑", "🎧"],
-    Cumbia: ["🪗", "🟡", "🎉", "🕺", "💛", "🎺"],
-    Reggae: ["🌴", "🟢", "☀", "🟡", "🔴", "☮"]
+    Rock: ["🎸", "🤘", "RIFF", "LIVE", "⚡", "🔥", "🎸 RIFF", "🤘 LIVE"],
+    Pop: ["✨", "POP", "STAR", "💖", "🌟", "👑", "✨ POP", "STAR"],
+    Cumbia: ["🪗", "FIESTA", "🎉", "🕺", "💛", "🎺", "🪗 FIESTA", "🎉"],
+    Reggae: ["🌴", "ONE", "LOVE", "☀", "☮", "🟢", "🌴 ONE", "LOVE"]
   };
   const icons = packs[estilo] || packs.Rock;
   return (

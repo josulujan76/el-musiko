@@ -1113,7 +1113,7 @@ body::before {
   }
 }
 
-/* --- Stickers por estilo --- */
+/* --- Stickers por estilo (papel / die-cut) --- */
 .app-carrera {
   position: relative;
   overflow: hidden;
@@ -1123,7 +1123,7 @@ body::before {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: 5;
   overflow: hidden;
 }
 
@@ -1136,27 +1136,37 @@ body::before {
 
 .sticker {
   position: absolute;
-  font-size: 28px;
-  line-height: 1;
-  opacity: 0.16;
-  filter: grayscale(0.15) contrast(1.05);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  color: #2a2218;
+  background: linear-gradient(165deg, #fff8e7 0%, #f3e6c8 100%);
+  border: 1.5px solid rgba(60, 45, 25, 0.35);
+  border-radius: 6px;
+  box-shadow:
+    1px 2px 0 rgba(255, 255, 255, 0.7) inset,
+    0 3px 8px rgba(0, 0, 0, 0.28);
+  opacity: 0.9;
   user-select: none;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  white-space: nowrap;
 }
 
-.sticker-1 { top: 8%; left: 4%; transform: rotate(-18deg); font-size: 34px; }
-.sticker-2 { top: 22%; right: 6%; transform: rotate(14deg); font-size: 30px; }
-.sticker-3 { top: 48%; left: 2%; transform: rotate(8deg); font-size: 26px; }
-.sticker-4 { bottom: 18%; right: 4%; transform: rotate(-12deg); font-size: 32px; }
-.sticker-5 { bottom: 8%; left: 12%; transform: rotate(20deg); font-size: 24px; }
-.sticker-6 { top: 70%; right: 14%; transform: rotate(-8deg); font-size: 28px; }
-
-[data-estilo="Rock"] .sticker { opacity: 0.18; }
-[data-estilo="Pop"] .sticker { opacity: 0.2; filter: saturate(1.2); }
-[data-estilo="Cumbia"] .sticker { opacity: 0.2; filter: saturate(1.25); }
-[data-estilo="Reggae"] .sticker { opacity: 0.18; }
+.sticker-1 { top: 4%; left: 3%; transform: rotate(-14deg); }
+.sticker-2 { top: 6%; right: 4%; transform: rotate(11deg); }
+.sticker-3 { top: 38%; left: 1.5%; transform: rotate(7deg); }
+.sticker-4 { top: 42%; right: 2%; transform: rotate(-9deg); }
+.sticker-5 { bottom: 22%; left: 3%; transform: rotate(16deg); }
+.sticker-6 { bottom: 18%; right: 3%; transform: rotate(-12deg); }
+.sticker-7 { top: 72%; left: 18%; transform: rotate(-6deg); }
+.sticker-8 { top: 78%; right: 16%; transform: rotate(8deg); }
 
 @media (max-width: 900px) {
-  .sticker { opacity: 0.1; font-size: 22px; }
-  .sticker-3, .sticker-5 { display: none; }
+  .sticker { opacity: 0.85; font-size: 13px; padding: 5px 8px; }
+  .sticker-7, .sticker-8 { display: none; }
 }
