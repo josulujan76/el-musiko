@@ -361,26 +361,22 @@ function bajarCategoria() {
 
 
 function reputacionesPermitidas() {
-  const indice = Math.max(
-    0,
-    indiceCategoria(jugador.categoria || "Under")
-  );
-
-  const permitidas = [ordenCategorias[indice]];
-
-  if (indice > 0) {
-    permitidas.push(ordenCategorias[indice - 1]);
+  const permitidas = [];
+  const cat = jugador.categoria || "Under";
+  const idx = Math.max(0, indiceCategoria(cat));
+  function add(n) {
+    if (n && permitidas.indexOf(n) === -1) permitidas.push(n);
   }
-
-  if (indice < ordenCategorias.length - 1) {
-    const arriba = ordenCategorias[indice + 1];
-    const exigencia = exigenciaBandas[arriba];
-
-    if (jugador.gral >= exigencia - 5) {
-      permitidas.push(arriba);
-    }
+  add(ordenCategorias[idx]);
+  if (idx > 0) add(ordenCategorias[idx - 1]);
+  // Potential: any tier your GRAL can reasonably interest
+  for (let i = 0; i < ordenCategorias.length; i++) {
+    const nombre = ordenCategorias[i];
+    const ex = exigenciaBandas[nombre];
+    // clubs see potential ~12 below exigencia; big jump needs closer GRAL
+    const holgura = i <= idx + 1 ? 12 : 6;
+    if (jugador.gral + holgura >= ex) add(nombre);
   }
-
   return permitidas;
 }
 
@@ -2674,6 +2670,17 @@ function calcularChanceOferta(banda) {
     chance += 0.08;
   }
 
+  const idxCat = Math.max(0, indiceCategoria(jugador.categoria || "Under"));
+  const idxBanda = indiceCategoria(banda.reputacion);
+  // 2+ tiers above award track: possible but rarer
+  if (idxBanda >= 0 && idxBanda >= idxCat + 2) {
+    chance *= 0.65;
+  }
+  // Prefer mid tiers when GRAL fits the band exigencia
+  if (idxBanda >= 0 && Math.abs(diferencia) <= 10 && idxBanda >= Math.max(0, idxCat - 1)) {
+    chance *= 1.08;
+  }
+
   return Math.min(chance, 0.98);
 }
 
@@ -2728,8 +2735,10 @@ function generarEvento() {
     return false;
   }
 
+  // Year/Intenso needs more events (only ~15 seasons); bienio a bit higher too
+  const chanceEvento = jugador.modo === "Intenso" ? 0.42 : 0.34;
   const hayEvento =
-    Math.random() < 0.24;
+    Math.random() < chanceEvento;
 
   if (!hayEvento) {
     jugador.eventoPendiente = null;
@@ -3638,44 +3647,62 @@ jugador.solos += solosBienio;
     cambioGral *= 0.85;
   }
 
+  // Dampen if overqualified for current band (stuck in Under racing to 99)
+  const sobre = jugador.gral - exigenciaGral;
+  if (sobre > 12) {
+    cambioGral *= 0.35;
+  } else if (sobre > 6) {
+    cambioGral *= 0.55;
+  }
+
+  const capChico = anios === 1 ? 2 : 3;
+  const capGrande = anios === 1 ? 3 : 5;
   if (
     (jugador.reputacionBandaActual === "Under" ||
       jugador.reputacionBandaActual === "Regional") &&
-    cambioGral > 3
+    cambioGral > capChico
   ) {
-    cambioGral = 3;
+    cambioGral = capChico;
   }
   if (
     jugador.reputacionBandaActual !== "Under" &&
     jugador.reputacionBandaActual !== "Regional" &&
-    cambioGral > 5
+    cambioGral > capGrande
   ) {
-    cambioGral = 5;
+    cambioGral = capGrande;
   }
 
   cambioGral = Math.round(cambioGral);
 
-  // Piso suave: temporada mediocre+ no se queda en 0 GRAL (salvo cerca del techo)
+  // Soft floor +1 only if still developing and not already overqualified
   if (
     cambioGral === 0 &&
-    jugador.gral < 90 &&
+    jugador.gral < 72 &&
+    sobre < 8 &&
     (rendimiento >= 0.35 || ovacionesBienio >= 1)
   ) {
     cambioGral = 1;
   }
+  // Young in small clubs: +1 only if not already way above band
   if (
     cambioGral < 1 &&
     jugador.edad < 28 &&
     (jugador.reputacionBandaActual === "Under" ||
       jugador.reputacionBandaActual === "Regional") &&
     rendimiento >= 0.55 &&
-    jugador.gral < 90
+    jugador.gral < 72 &&
+    sobre < 8
   ) {
     cambioGral = 1;
   }
 
-  // Techo blando cerca del potencial
-  if (jugador.gral >= potencialCarrera - 1 && cambioGral > 1) {
+  // Soft ceiling: high GRAL grows slowly; 99 is rare/legendary
+  if (jugador.gral >= 92) {
+    if (cambioGral > 1) cambioGral = 1;
+    if (cambioGral > 0 && Math.random() < 0.65) cambioGral = 0;
+  } else if (jugador.gral >= 88) {
+    if (cambioGral > 1) cambioGral = 1;
+  } else if (jugador.gral >= potencialCarrera - 1 && cambioGral > 1) {
     cambioGral = Math.min(cambioGral, 1);
   }
 
@@ -3686,12 +3713,12 @@ jugador.solos += solosBienio;
     jugador.reputacionBandaActual === "Under" ||
     jugador.reputacionBandaActual === "Regional";
 
-  // El evento no puede romper el tope temprano: Under/Regional max +3 netos por bienio.
-  if (clubChicoFinal && deltaGral > 3) {
-    deltaGral = 3;
+  // Event extras cannot break small-club cap (year +2 / bienio +3)
+  if (clubChicoFinal && deltaGral > capChico) {
+    deltaGral = capChico;
   }
-  if (clubChicoFinal && deltaGral < -3) {
-    deltaGral = -3;
+  if (clubChicoFinal && deltaGral < -capChico) {
+    deltaGral = -capChico;
   }
 
   jugador.gral += deltaGral;

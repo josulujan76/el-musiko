@@ -1123,7 +1123,7 @@ body::before {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: 6;
   overflow: hidden;
 }
 
@@ -1138,28 +1138,28 @@ body::before {
   position: absolute;
   display: block;
   padding: 0;
-  font-size: 34px;
+  font-size: 38px;
   line-height: 1;
   background: none;
   border: none;
   box-shadow: none;
   color: inherit;
-  opacity: 0.34;
+  opacity: 0.42;
   user-select: none;
   pointer-events: none;
   filter: saturate(1.05);
 }
 
-.sticker-1 { top: 5%; left: 2%; transform: rotate(-16deg); font-size: 38px; }
-.sticker-2 { top: 8%; right: 3%; transform: rotate(12deg); font-size: 32px; }
-.sticker-3 { top: 36%; left: 1%; transform: rotate(8deg); font-size: 30px; }
-.sticker-4 { top: 40%; right: 1.5%; transform: rotate(-10deg); font-size: 36px; }
-.sticker-5 { bottom: 20%; left: 2%; transform: rotate(18deg); font-size: 28px; }
-.sticker-6 { bottom: 16%; right: 2%; transform: rotate(-14deg); font-size: 34px; }
-.sticker-7 { top: 70%; left: 16%; transform: rotate(-7deg); font-size: 30px; }
-.sticker-8 { top: 76%; right: 14%; transform: rotate(9deg); font-size: 32px; }
+.sticker-1 { top: 5%; left: 2%; transform: rotate(-16deg); font-size: 42px; }
+.sticker-2 { top: 8%; right: 3%; transform: rotate(12deg); font-size: 38px; }
+.sticker-3 { top: 36%; left: 1%; transform: rotate(8deg); font-size: 36px; }
+.sticker-4 { top: 40%; right: 1.5%; transform: rotate(-10deg); font-size: 40px; }
+.sticker-5 { bottom: 20%; left: 2%; transform: rotate(18deg); font-size: 36px; }
+.sticker-6 { bottom: 16%; right: 2%; transform: rotate(-14deg); font-size: 38px; }
+.sticker-7 { top: 70%; left: 16%; transform: rotate(-7deg); font-size: 36px; }
+.sticker-8 { top: 76%; right: 14%; transform: rotate(9deg); font-size: 38px; }
 
 @media (max-width: 900px) {
-  .sticker { opacity: 0.26; font-size: 24px; }
+  .sticker { opacity: 0.34; font-size: 28px; }
   .sticker-7, .sticker-8 { display: none; }
 }
