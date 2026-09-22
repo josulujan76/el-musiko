@@ -1073,8 +1073,11 @@ const logosBandas = {
   "L-Gante": "logos/l-gante.png",
   "Nonpalidece": "logos/nonpalidece.png",
   "Agapornis": "logos/agapornis.png",
-  "Burning Spear": "logos/burning-spear.png"
-
+  "Burning Spear": "logos/burning-spear.png",
+  "Gilda": "logos/gilda.png",
+  "Amar Azul": "logos/amar-azul.png",
+  "Antonio Ríos": "logos/antonio-rios.png",
+  "Alcides": "logos/alcides.png"
 };
 
 
