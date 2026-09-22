@@ -518,6 +518,7 @@ button.opcion-ritmo.activo {
 }
 
 .tabla-anos-wrap {
+  position: relative;
   overflow: auto;
   max-height: calc(100vh - 72px);
   scroll-behavior: smooth;
@@ -601,14 +602,13 @@ button.opcion-ritmo.activo {
 }
 
 .tabla-anos tr.etapa-solista td {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
   color: #f0d78c;
-  background: linear-gradient(
-    90deg,
-    rgba(212, 175, 55, 0.14),
-    rgba(212, 175, 55, 0.05) 55%,
-    transparent
-  );
-  border-top: 1px solid rgba(212, 175, 55, 0.28);
+  background: #2a2118;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.35);
+  border-top: 1px solid rgba(212, 175, 55, 0.35);
 }
 
 .tabla-anos tr.etapa-solista td:first-child {

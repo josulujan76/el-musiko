@@ -37,8 +37,8 @@ let jugador = {
     shows: 0,
     ovaciones: 0,
     solos: 0,
-    convocatorias: 0,
-    convocadoEsteBienio: false,
+    sesiones: 0,
+    sesionEsteBienio: false,
     premios: []
   },
 
@@ -200,8 +200,8 @@ function estadoJugadorInicial() {
     shows: 0,
     ovaciones: 0,
     solos: 0,
-    convocatorias: 0,
-    convocadoEsteBienio: false,
+    sesiones: 0,
+    sesionEsteBienio: false,
     premios: []
   },
 
@@ -272,27 +272,9 @@ function continuarPartida() {
   }
   jugador = Object.assign(estadoJugadorInicial(), data.jugador);
   if (!jugador.solista) {
-    jugador.solista = {
-      shows: 0,
-      ovaciones: 0,
-      solos: 0,
-      convocatorias: 0,
-      convocadoEsteBienio: false,
-      premios: []
-    };
+    jugador.solista = normalizarSolista(null);
   } else {
-    if (typeof jugador.solista.convocatorias !== "number") {
-      jugador.solista.convocatorias = 0;
-    }
-    if (typeof jugador.solista.convocadoEsteBienio !== "boolean") {
-      jugador.solista.convocadoEsteBienio = false;
-    }
-    if (!Array.isArray(jugador.solista.premios)) {
-      jugador.solista.premios = [];
-    }
-    if (typeof jugador.solista.shows !== "number") jugador.solista.shows = 0;
-    if (typeof jugador.solista.ovaciones !== "number") jugador.solista.ovaciones = 0;
-    if (typeof jugador.solista.solos !== "number") jugador.solista.solos = 0;
+    jugador.solista = normalizarSolista(jugador.solista);
   }
   if (!jugador.modificadoresBienio) {
     jugador.modificadoresBienio = {
@@ -1542,16 +1524,7 @@ function otorgarPremio(nombre) {
   jugador.premiosPendientes.push(nombre);
 
   if (esSolista) {
-    if (!jugador.solista) {
-      jugador.solista = {
-        shows: 0,
-        ovaciones: 0,
-        solos: 0,
-        convocatorias: 0,
-        convocadoEsteBienio: false,
-        premios: []
-      };
-    }
+    jugador.solista = normalizarSolista(jugador.solista);
     if (!Array.isArray(jugador.solista.premios)) {
       jugador.solista.premios = [];
     }
@@ -1823,14 +1796,8 @@ function renderLineaTiempo() {
     });
   }
 
-  const sol = jugador.solista || {
-    shows: 0,
-    ovaciones: 0,
-    solos: 0,
-    convocatorias: 0,
-    premios: []
-  };
-  const convs = sol.convocatorias || 0;
+  const sol = normalizarSolista(jugador.solista);
+  const sesiones = sol.sesiones || 0;
   const premiosSol = Array.isArray(sol.premios) ? sol.premios : [];
   const ultimoPremioSol =
     premiosSol.length > 0 ? premiosSol[premiosSol.length - 1] : "";
@@ -1843,8 +1810,8 @@ function renderLineaTiempo() {
   filas += `
     <tr class="etapa-solista">
       <td>Solista</td>
-      <td>${convs > 0 ? "Convocado" : "—"}</td>
-      <td>${convs} conv.</td>
+      <td>${sesiones > 0 ? "Solista" : "—"}</td>
+      <td>${sesiones > 0 ? sesiones + " ses." : "—"}</td>
       <td class="col-premio">${celdaPremioSol}</td>
       ${celdaStat(sol.shows || 0, "shows")}
       ${celdaStat(sol.ovaciones || 0, "ovaciones")}
@@ -3489,19 +3456,36 @@ function clamp01(valor, min, max) {
   return Math.max(min, Math.min(max, valor));
 }
 
-function evaluarConvocatoriaSolista(ovacionesBienio, solosBienio) {
-  if (!jugador.solista) {
-    jugador.solista = {
+function normalizarSolista(sol) {
+  if (!sol || typeof sol !== "object") {
+    return {
       shows: 0,
       ovaciones: 0,
       solos: 0,
-      convocatorias: 0,
-      convocadoEsteBienio: false,
+      sesiones: 0,
+      sesionEsteBienio: false,
       premios: []
     };
   }
+  if (typeof sol.sesiones !== "number") {
+    sol.sesiones =
+      typeof sol.convocatorias === "number" ? sol.convocatorias : 0;
+  }
+  if (typeof sol.sesionEsteBienio !== "boolean") {
+    sol.sesionEsteBienio = !!sol.convocadoEsteBienio;
+  }
+  if (typeof sol.shows !== "number") sol.shows = 0;
+  if (typeof sol.ovaciones !== "number") sol.ovaciones = 0;
+  if (typeof sol.solos !== "number") sol.solos = 0;
+  if (!Array.isArray(sol.premios)) sol.premios = [];
+  return sol;
+}
 
-  jugador.solista.convocadoEsteBienio = false;
+
+function evaluarSesionSolista(ovacionesBienio, solosBienio) {
+  jugador.solista = normalizarSolista(jugador.solista);
+
+  jugador.solista.sesionEsteBienio = false;
 
   if (jugador.gral < 58) {
     return false;
@@ -3528,8 +3512,8 @@ function evaluarConvocatoriaSolista(ovacionesBienio, solosBienio) {
     return false;
   }
 
-  jugador.solista.convocadoEsteBienio = true;
-  jugador.solista.convocatorias = (jugador.solista.convocatorias || 0) + 1;
+  jugador.solista.sesionEsteBienio = true;
+  jugador.solista.sesiones = (jugador.solista.sesiones || 0) + 1;
 
   let shows = 3 + Math.floor(Math.random() * 8); // 3–10
   let ovaciones = Math.floor(Math.random() * 5); // 0–4
@@ -3554,7 +3538,7 @@ function evaluarConvocatoriaSolista(ovacionesBienio, solosBienio) {
 }
 
 function evaluarPremiosSolista() {
-  if (!jugador.solista || !jugador.solista.convocadoEsteBienio) {
+  if (!jugador.solista || !jugador.solista.sesionEsteBienio) {
     return;
   }
 
@@ -3565,12 +3549,12 @@ function evaluarPremiosSolista() {
     return;
   }
 
-  const conv = jugador.solista.convocatorias || 0;
+  const sesiones = jugador.solista.sesiones || 0;
   const stats =
     (jugador.solista.ovaciones || 0) * 0.012 +
     (jugador.solista.solos || 0) * 0.01 +
     (jugador.solista.shows || 0) * 0.0015;
-  let chance = 0.08 + Math.min(0.28, conv * 0.035) + Math.min(0.18, stats);
+  let chance = 0.08 + Math.min(0.28, sesiones * 0.035) + Math.min(0.18, stats);
   if (jugador.gral >= 75) chance += 0.05;
   if (jugador.gral >= 85) chance += 0.05;
   chance = clamp01(chance, 0.08, 0.55);
@@ -3736,14 +3720,20 @@ jugador.solos += solosBienio;
   const huecoPotencial = Math.max(0, potencialCarrera - jugador.gral);
 
   let factorEdad = 1;
-  if (jugador.edad < 24) {
-    factorEdad = 1.08;
-  } else if (jugador.edad < 31) {
-    factorEdad = 1;
-  } else if (jugador.edad < 37) {
-    factorEdad = 0.62;
+  if (jugador.edad < 22) {
+    factorEdad = 1.25;
+  } else if (jugador.edad < 26) {
+    factorEdad = 1.15;
+  } else if (jugador.edad < 30) {
+    factorEdad = 1.05;
+  } else if (jugador.edad < 34) {
+    factorEdad = 1.00;
+  } else if (jugador.edad < 38) {
+    factorEdad = 0.75;
+  } else if (jugador.edad < 42) {
+    factorEdad = 0.45;
   } else {
-    factorEdad = 0.32;
+    factorEdad = 0.15;
   }
 
   const factorClub = {
@@ -3824,16 +3814,25 @@ jugador.solos += solosBienio;
     cambioGral *= 0.85;
   }
 
-  // Soft overqualified dampen (offers still lag; don't freeze climb)
-  const sobre = jugador.gral - exigenciaGral;
-  if (sobre > 18) {
-    cambioGral *= 0.55;
-  } else if (sobre > 12) {
-    cambioGral *= 0.75;
+  // Aging drift (late career stall/decline) — before caps
+  if (jugador.edad >= 40) {
+    cambioGral -= 0.35 + Math.random() * 0.5;
+  }
+  if (jugador.edad >= 43) {
+    cambioGral -= 0.4;
   }
 
-  const capChico = anios === 1 ? 2 : 3;
-  const capGrande = anios === 1 ? 3 : 5;
+  // Soft overqualified dampen (offers still lag; don't freeze climb)
+  const sobre = jugador.gral - exigenciaGral;
+  if (sobre > 20) {
+    cambioGral *= 0.6;
+  } else if (sobre > 14) {
+    cambioGral *= 0.8;
+  }
+
+  // Caps: Under/Regional year +3 / bienio +4; Nacional+ year +4 / bienio +5
+  const capChico = anios === 1 ? 3 : 4;
+  const capGrande = anios === 1 ? 4 : 5;
   if (
     (jugador.reputacionBandaActual === "Under" ||
       jugador.reputacionBandaActual === "Regional") &&
@@ -3851,11 +3850,12 @@ jugador.solos += solosBienio;
 
   cambioGral = Math.round(cambioGral);
 
-  // Soft floor +1 if still developing and not badly overqualified
+  // Soft floor +1 early/mid career only (edad < 36); no floor when edad >= 38
   if (
-    cambioGral === 0 &&
-    jugador.gral < 80 &&
-    sobre < 14 &&
+    cambioGral < 1 &&
+    jugador.edad < 36 &&
+    jugador.gral < 78 &&
+    sobre < 16 &&
     (rendimiento >= 0.35 || ovacionesBienio >= 1)
   ) {
     cambioGral = 1;
@@ -3873,11 +3873,11 @@ jugador.solos += solosBienio;
     cambioGral = 1;
   }
 
-  // Soft ceiling only at high GRAL (>=90 / >=94)
-  if (jugador.gral >= 94) {
+  // Soft ceiling: >=93 max +1; >=96 50% chance 0 (allow mid-80s/low-90s)
+  if (jugador.gral >= 96) {
     if (cambioGral > 1) cambioGral = 1;
-    if (cambioGral > 0 && Math.random() < 0.65) cambioGral = 0;
-  } else if (jugador.gral >= 90) {
+    if (cambioGral > 0 && Math.random() < 0.5) cambioGral = 0;
+  } else if (jugador.gral >= 93) {
     if (cambioGral > 1) cambioGral = 1;
   } else if (jugador.gral >= potencialCarrera - 1 && cambioGral > 1) {
     cambioGral = Math.min(cambioGral, 1);
@@ -3890,7 +3890,7 @@ jugador.solos += solosBienio;
     jugador.reputacionBandaActual === "Under" ||
     jugador.reputacionBandaActual === "Regional";
 
-  // Event extras cannot break small-club cap (year +2 / bienio +3)
+  // Event extras cannot break small-club cap (year +3 / bienio +4)
   if (clubChicoFinal && deltaGral > capChico) {
     deltaGral = capChico;
   }
@@ -4002,8 +4002,8 @@ jugador.fans +=
     }
   }
 
-  // Track paralelo solista (convocatoria + premios propios; no ensucia fila de banda)
-  evaluarConvocatoriaSolista(ovacionesBienio, solosBienio);
+  // Track paralelo solista (sesión + premios propios; no ensucia fila de banda)
+  evaluarSesionSolista(ovacionesBienio, solosBienio);
   evaluarPremiosSolista();
 
   jugador.modificadoresBienio = modificadoresVacios();
