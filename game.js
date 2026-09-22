@@ -35,8 +35,11 @@ let jugador = {
 
   solista: {
     shows: 0,
+    ovaciones: 0,
     solos: 0,
-    ovaciones: 0
+    convocatorias: 0,
+    convocadoEsteBienio: false,
+    premios: []
   },
 
   eventoPendiente: null,
@@ -195,8 +198,11 @@ function estadoJugadorInicial() {
 
   solista: {
     shows: 0,
+    ovaciones: 0,
     solos: 0,
-    ovaciones: 0
+    convocatorias: 0,
+    convocadoEsteBienio: false,
+    premios: []
   },
 
   eventoPendiente: null,
@@ -266,7 +272,27 @@ function continuarPartida() {
   }
   jugador = Object.assign(estadoJugadorInicial(), data.jugador);
   if (!jugador.solista) {
-    jugador.solista = { shows: 0, solos: 0, ovaciones: 0 };
+    jugador.solista = {
+      shows: 0,
+      ovaciones: 0,
+      solos: 0,
+      convocatorias: 0,
+      convocadoEsteBienio: false,
+      premios: []
+    };
+  } else {
+    if (typeof jugador.solista.convocatorias !== "number") {
+      jugador.solista.convocatorias = 0;
+    }
+    if (typeof jugador.solista.convocadoEsteBienio !== "boolean") {
+      jugador.solista.convocadoEsteBienio = false;
+    }
+    if (!Array.isArray(jugador.solista.premios)) {
+      jugador.solista.premios = [];
+    }
+    if (typeof jugador.solista.shows !== "number") jugador.solista.shows = 0;
+    if (typeof jugador.solista.ovaciones !== "number") jugador.solista.ovaciones = 0;
+    if (typeof jugador.solista.solos !== "number") jugador.solista.solos = 0;
   }
   if (!jugador.modificadoresBienio) {
     jugador.modificadoresBienio = {
@@ -1485,19 +1511,54 @@ const premiosPorCategoria = {
 };
 
 
+const premiosSolista = [
+  "Sesión destacada",
+  "Featuring del año",
+  "Hit solista",
+  "Gira íntima sold-out",
+  "Unplugged TV",
+  "Colaboración viral",
+  "Disco solista de oro",
+  "Artista solista del año"
+];
+
+function esPremioSolista(nombre) {
+  return premiosSolista.indexOf(nombre) !== -1;
+}
+
 function otorgarPremio(nombre) {
   if (!nombre || yaTienePremio(nombre)) {
     return false;
   }
 
+  const esSolista = esPremioSolista(nombre);
+
   jugador.premios.push({
     nombre: nombre,
-    banda: jugador.bandaActual || ""
+    banda: esSolista ? "Solista" : (jugador.bandaActual || ""),
+    tipo: esSolista ? "solista" : "banda"
   });
   jugador.ultimoLogro = nombre;
   jugador.premiosPendientes.push(nombre);
 
-  if (esPremioDeCategoria(nombre, jugador.categoria)) {
+  if (esSolista) {
+    if (!jugador.solista) {
+      jugador.solista = {
+        shows: 0,
+        ovaciones: 0,
+        solos: 0,
+        convocatorias: 0,
+        convocadoEsteBienio: false,
+        premios: []
+      };
+    }
+    if (!Array.isArray(jugador.solista.premios)) {
+      jugador.solista.premios = [];
+    }
+    if (jugador.solista.premios.indexOf(nombre) === -1) {
+      jugador.solista.premios.push(nombre);
+    }
+  } else if (esPremioDeCategoria(nombre, jugador.categoria)) {
     if (subirCategoria()) {
       jugador.ultimoLogro = nombre + " · ASCENSO";
     }
@@ -1762,16 +1823,33 @@ function renderLineaTiempo() {
     });
   }
 
+  const sol = jugador.solista || {
+    shows: 0,
+    ovaciones: 0,
+    solos: 0,
+    convocatorias: 0,
+    premios: []
+  };
+  const convs = sol.convocatorias || 0;
+  const premiosSol = Array.isArray(sol.premios) ? sol.premios : [];
+  const ultimoPremioSol =
+    premiosSol.length > 0 ? premiosSol[premiosSol.length - 1] : "";
+  const celdaPremioSol = ultimoPremioSol
+    ? mostrarLogoPremio(ultimoPremioSol, 22)
+    : (premiosSol.length
+        ? premiosSol.length + "★"
+        : "—");
+
   filas += `
     <tr class="etapa-solista">
       <td>Solista</td>
-      <td>-</td>
-      <td></td>
-      <td></td>
-      ${celdaStat(jugador.solista.shows, "shows")}
-      ${celdaStat(jugador.solista.ovaciones, "ovaciones")}
-      ${celdaStat(jugador.solista.solos, "solos")}
-      <td class="num">-</td>
+      <td>${convs > 0 ? "Convocado" : "—"}</td>
+      <td>${convs} conv.</td>
+      <td class="col-premio">${celdaPremioSol}</td>
+      ${celdaStat(sol.shows || 0, "shows")}
+      ${celdaStat(sol.ovaciones || 0, "ovaciones")}
+      ${celdaStat(sol.solos || 0, "solos")}
+      <td class="num">—</td>
     </tr>
   `;
 
@@ -3406,6 +3484,105 @@ function comenzarCarrera() {
 }
 
 
+
+function clamp01(valor, min, max) {
+  return Math.max(min, Math.min(max, valor));
+}
+
+function evaluarConvocatoriaSolista(ovacionesBienio, solosBienio) {
+  if (!jugador.solista) {
+    jugador.solista = {
+      shows: 0,
+      ovaciones: 0,
+      solos: 0,
+      convocatorias: 0,
+      convocadoEsteBienio: false,
+      premios: []
+    };
+  }
+
+  jugador.solista.convocadoEsteBienio = false;
+
+  if (jugador.gral < 58) {
+    return false;
+  }
+
+  const bonusCat = {
+    Under: 0,
+    Regional: 0.02,
+    Nacional: 0.05,
+    Internacional: 0.08,
+    Leyenda: 0.10
+  }[jugador.categoria || "Under"] || 0;
+
+  let chance =
+    0.04 +
+    (jugador.gral - 55) * 0.008 +
+    (ovacionesBienio || 0) * 0.01 +
+    (solosBienio || 0) * 0.006 +
+    bonusCat;
+
+  chance = clamp01(chance, 0.04, 0.45);
+
+  if (Math.random() >= chance) {
+    return false;
+  }
+
+  jugador.solista.convocadoEsteBienio = true;
+  jugador.solista.convocatorias = (jugador.solista.convocatorias || 0) + 1;
+
+  let shows = 3 + Math.floor(Math.random() * 8); // 3–10
+  let ovaciones = Math.floor(Math.random() * 5); // 0–4
+  let solos = Math.floor(Math.random() * 4); // 0–3
+  const inst = jugador.instrumento || "";
+
+  if (inst === "Guitarra") {
+    solos = Math.min(3, solos + 1);
+  } else if (inst === "Cantante") {
+    ovaciones = Math.min(4, ovaciones + 1);
+    shows = Math.min(10, shows + 1);
+  } else if (inst === "Batería" || inst === "Bateria" || inst === "Percusión" || inst === "Percusion") {
+    shows = Math.min(10, shows + 1);
+  } else if (inst === "Bajista") {
+    solos = Math.max(0, solos - 1);
+  }
+
+  jugador.solista.shows += shows;
+  jugador.solista.ovaciones += ovaciones;
+  jugador.solista.solos += solos;
+  return true;
+}
+
+function evaluarPremiosSolista() {
+  if (!jugador.solista || !jugador.solista.convocadoEsteBienio) {
+    return;
+  }
+
+  const disponibles = premiosSolista.filter(function (p) {
+    return !yaTienePremio(p);
+  });
+  if (disponibles.length === 0) {
+    return;
+  }
+
+  const conv = jugador.solista.convocatorias || 0;
+  const stats =
+    (jugador.solista.ovaciones || 0) * 0.012 +
+    (jugador.solista.solos || 0) * 0.01 +
+    (jugador.solista.shows || 0) * 0.0015;
+  let chance = 0.08 + Math.min(0.28, conv * 0.035) + Math.min(0.18, stats);
+  if (jugador.gral >= 75) chance += 0.05;
+  if (jugador.gral >= 85) chance += 0.05;
+  chance = clamp01(chance, 0.08, 0.55);
+
+  if (Math.random() >= chance) {
+    return;
+  }
+
+  const premio = disponibles[Math.floor(Math.random() * disponibles.length)];
+  otorgarPremio(premio);
+}
+
 function avanzarBienio() {
   const edadInicio = jugador.edad;
   const intenso = jugador.modo === "Intenso";
@@ -3647,12 +3824,12 @@ jugador.solos += solosBienio;
     cambioGral *= 0.85;
   }
 
-  // Dampen if overqualified for current band (stuck in Under racing to 99)
+  // Soft overqualified dampen (offers still lag; don't freeze climb)
   const sobre = jugador.gral - exigenciaGral;
-  if (sobre > 12) {
-    cambioGral *= 0.35;
-  } else if (sobre > 6) {
+  if (sobre > 18) {
     cambioGral *= 0.55;
+  } else if (sobre > 12) {
+    cambioGral *= 0.75;
   }
 
   const capChico = anios === 1 ? 2 : 3;
@@ -3674,33 +3851,33 @@ jugador.solos += solosBienio;
 
   cambioGral = Math.round(cambioGral);
 
-  // Soft floor +1 only if still developing and not already overqualified
+  // Soft floor +1 if still developing and not badly overqualified
   if (
     cambioGral === 0 &&
-    jugador.gral < 72 &&
-    sobre < 8 &&
+    jugador.gral < 80 &&
+    sobre < 14 &&
     (rendimiento >= 0.35 || ovacionesBienio >= 1)
   ) {
     cambioGral = 1;
   }
-  // Young in small clubs: +1 only if not already way above band
+  // Young in small clubs: at least +1 if performing
   if (
     cambioGral < 1 &&
     jugador.edad < 28 &&
     (jugador.reputacionBandaActual === "Under" ||
       jugador.reputacionBandaActual === "Regional") &&
-    rendimiento >= 0.55 &&
-    jugador.gral < 72 &&
-    sobre < 8
+    rendimiento >= 0.5 &&
+    jugador.gral < 82 &&
+    sobre < 14
   ) {
     cambioGral = 1;
   }
 
-  // Soft ceiling: high GRAL grows slowly; 99 is rare/legendary
-  if (jugador.gral >= 92) {
+  // Soft ceiling only at high GRAL (>=90 / >=94)
+  if (jugador.gral >= 94) {
     if (cambioGral > 1) cambioGral = 1;
     if (cambioGral > 0 && Math.random() < 0.65) cambioGral = 0;
-  } else if (jugador.gral >= 88) {
+  } else if (jugador.gral >= 90) {
     if (cambioGral > 1) cambioGral = 1;
   } else if (jugador.gral >= potencialCarrera - 1 && cambioGral > 1) {
     cambioGral = Math.min(cambioGral, 1);
@@ -3824,6 +4001,10 @@ jugador.fans +=
       etapaHecha.logro = "ASCENSO";
     }
   }
+
+  // Track paralelo solista (convocatoria + premios propios; no ensucia fila de banda)
+  evaluarConvocatoriaSolista(ovacionesBienio, solosBienio);
+  evaluarPremiosSolista();
 
   jugador.modificadoresBienio = modificadoresVacios();
   jugador.rolFijadoPorEvento = false;
@@ -4029,10 +4210,10 @@ function cambiarBanda(nombre, reputacion) {
 function htmlStickersEstilo() {
   const estilo = jugador.estilo || "Rock";
   const packs = {
-    Rock: ["🎸", "🤘", "⚡", "🔥", "🖤", "🎤", "🥁", "🎶"],
-    Pop: ["✨", "💖", "🌟", "💿", "👑", "🎧", "🎵", "💫"],
-    Cumbia: ["🪗", "🎉", "🕺", "💛", "🎺", "🌞", "🔔", "🎊"],
-    Reggae: ["🌴", "🟢", "☀", "🟡", "🔴", "☮", "🍀", "🎵"]
+    Rock: ["🎸", "🥁", "🎤", "🎹", "🤘", "⚡", "🔥", "🎶"],
+    Pop: ["🎤", "🎧", "🎹", "💿", "✨", "🌟", "🎵", "💫"],
+    Cumbia: ["🪗", "🎺", "🥁", "🎸", "🎉", "🌞", "🔔", "💛"],
+    Reggae: ["🎸", "🥁", "🎹", "🌴", "🟢", "☀", "🍀", "🎵"]
   };
   const icons = packs[estilo] || packs.Rock;
   return (

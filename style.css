@@ -601,7 +601,20 @@ button.opcion-ritmo.activo {
 }
 
 .tabla-anos tr.etapa-solista td {
-  color: var(--muted);
+  color: #f0d78c;
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0.14),
+    rgba(212, 175, 55, 0.05) 55%,
+    transparent
+  );
+  border-top: 1px solid rgba(212, 175, 55, 0.28);
+}
+
+.tabla-anos tr.etapa-solista td:first-child {
+  box-shadow: inset 3px 0 0 #d4af37;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .etapa-vacia {
@@ -1144,22 +1157,23 @@ body::before {
   border: none;
   box-shadow: none;
   color: inherit;
-  opacity: 0.42;
+  opacity: 0.38;
   user-select: none;
   pointer-events: none;
   filter: saturate(1.05);
 }
 
-.sticker-1 { top: 5%; left: 2%; transform: rotate(-16deg); font-size: 42px; }
-.sticker-2 { top: 8%; right: 3%; transform: rotate(12deg); font-size: 38px; }
-.sticker-3 { top: 36%; left: 1%; transform: rotate(8deg); font-size: 36px; }
-.sticker-4 { top: 40%; right: 1.5%; transform: rotate(-10deg); font-size: 40px; }
-.sticker-5 { bottom: 20%; left: 2%; transform: rotate(18deg); font-size: 36px; }
-.sticker-6 { bottom: 16%; right: 2%; transform: rotate(-14deg); font-size: 38px; }
-.sticker-7 { top: 70%; left: 16%; transform: rotate(-7deg); font-size: 36px; }
-.sticker-8 { top: 76%; right: 14%; transform: rotate(9deg); font-size: 38px; }
+/* LEFT timeline margins / mid-left only — never right half (ficha/oferta) */
+.sticker-1 { top: 4%; left: 2%; transform: rotate(-16deg); font-size: 42px; }
+.sticker-2 { top: 14%; left: 11%; transform: rotate(12deg); font-size: 38px; }
+.sticker-3 { top: 32%; left: 1%; transform: rotate(8deg); font-size: 36px; }
+.sticker-4 { display: none; } /* was right-side */
+.sticker-5 { bottom: 22%; left: 3%; transform: rotate(18deg); font-size: 36px; }
+.sticker-6 { display: none; } /* was right-side */
+.sticker-7 { top: 58%; left: 15%; transform: rotate(-7deg); font-size: 36px; }
+.sticker-8 { top: 74%; left: 7%; transform: rotate(9deg); font-size: 38px; }
 
 @media (max-width: 900px) {
-  .sticker { opacity: 0.34; font-size: 28px; }
+  .sticker { opacity: 0.32; font-size: 28px; }
   .sticker-7, .sticker-8 { display: none; }
 }
