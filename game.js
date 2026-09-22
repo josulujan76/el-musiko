@@ -3999,10 +3999,10 @@ function cambiarBanda(nombre, reputacion) {
 function htmlStickersEstilo() {
   const estilo = jugador.estilo || "Rock";
   const packs = {
-    Rock: ["🎸", "🤘", "RIFF", "LIVE", "⚡", "🔥", "🎸 RIFF", "🤘 LIVE"],
-    Pop: ["✨", "POP", "STAR", "💖", "🌟", "👑", "✨ POP", "STAR"],
-    Cumbia: ["🪗", "FIESTA", "🎉", "🕺", "💛", "🎺", "🪗 FIESTA", "🎉"],
-    Reggae: ["🌴", "ONE", "LOVE", "☀", "☮", "🟢", "🌴 ONE", "LOVE"]
+    Rock: ["🎸", "🤘", "⚡", "🔥", "🖤", "🎤", "🥁", "🎶"],
+    Pop: ["✨", "💖", "🌟", "💿", "👑", "🎧", "🎵", "💫"],
+    Cumbia: ["🪗", "🎉", "🕺", "💛", "🎺", "🌞", "🔔", "🎊"],
+    Reggae: ["🌴", "🟢", "☀", "🟡", "🔴", "☮", "🍀", "🎵"]
   };
   const icons = packs[estilo] || packs.Rock;
   return (
