@@ -3056,12 +3056,24 @@ function mostrarSorteoYAplicar(elegida) {
   const caraBuena = overlay.querySelector(".cara-buena");
   const caraMala = overlay.querySelector(".cara-mala");
   const estado = overlay.querySelector(".sorteo-estado");
+  const carta = overlay.querySelector(".sorteo-carta");
   let tick = 0;
   const total = 18;
+  let revelado = false;
+  let cerrado = false;
 
   function marcar(ladoBueno) {
     caraBuena.classList.toggle("activo", ladoBueno);
     caraMala.classList.toggle("activo", !ladoBueno);
+  }
+
+  function continuar() {
+    if (!revelado || cerrado) {
+      return;
+    }
+    cerrado = true;
+    overlay.remove();
+    aplicarOpcionYAvanzar(resultado);
   }
 
   function paso() {
@@ -3073,9 +3085,20 @@ function mostrarSorteoYAplicar(elegida) {
       caraMala.classList.remove("activo");
       (bueno ? caraBuena : caraMala).classList.add("ganador");
       estado.textContent = resultado.texto || (bueno ? "Salió bien" : "Salió mal");
-      setTimeout(function () {
-        aplicarOpcionYAvanzar(resultado);
-      }, 900);
+      revelado = true;
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "sorteo-continuar btn-principal";
+      btn.textContent = "Continuar";
+      btn.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        continuar();
+      });
+      carta.appendChild(btn);
+
+      // Tap/click overlay as secondary dismiss only AFTER reveal (not during shuffle)
+      overlay.addEventListener("click", continuar);
       return;
     }
 
@@ -3729,16 +3752,16 @@ jugador.solos += solosBienio;
   } else if (jugador.edad < 34) {
     factorEdad = 1.00;
   } else if (jugador.edad < 38) {
-    factorEdad = 0.75;
+    factorEdad = 0.9;
   } else if (jugador.edad < 42) {
-    factorEdad = 0.45;
+    factorEdad = 0.7;
   } else {
-    factorEdad = 0.15;
+    factorEdad = 0.4;
   }
 
   const factorClub = {
-    Under: 0.62,
-    Regional: 0.78,
+    Under: 0.78,
+    Regional: 0.92,
     Nacional: 1.12,
     Internacional: 1.28,
     Leyenda: 1.38
@@ -3811,23 +3834,23 @@ jugador.solos += solosBienio;
 
   // Escala suave solo en modo Intenso (1 año); bienio queda en 1.0
   if (anios === 1) {
-    cambioGral *= 0.85;
+    cambioGral *= 0.9;
   }
 
-  // Aging drift (late career stall/decline) — before caps
-  if (jugador.edad >= 40) {
-    cambioGral -= 0.35 + Math.random() * 0.5;
+  // Aging drift: solo si el rendimiento es flojo (no castigar carrera solida)
+  if (jugador.edad >= 40 && rendimiento < 0.55) {
+    cambioGral -= 0.25 + Math.random() * 0.35;
   }
-  if (jugador.edad >= 43) {
-    cambioGral -= 0.4;
+  if (jugador.edad >= 43 && rendimiento < 0.45) {
+    cambioGral -= 0.3;
   }
 
-  // Soft overqualified dampen (offers still lag; don't freeze climb)
+  // Soft overqualified dampen: no congelar el trepe mid-70s hacia Nacional
   const sobre = jugador.gral - exigenciaGral;
-  if (sobre > 20) {
-    cambioGral *= 0.6;
-  } else if (sobre > 14) {
-    cambioGral *= 0.8;
+  if (sobre > 22) {
+    cambioGral *= 0.65;
+  } else if (sobre > 16) {
+    cambioGral *= 0.85;
   }
 
   // Caps: Under/Regional year +3 / bienio +4; Nacional+ year +4 / bienio +5
@@ -3850,11 +3873,11 @@ jugador.solos += solosBienio;
 
   cambioGral = Math.round(cambioGral);
 
-  // Soft floor +1 early/mid career only (edad < 36); no floor when edad >= 38
+  // Soft floor +1 mid career (edad < 40); ayuda a llegar a umbral Nacional (~75)
   if (
     cambioGral < 1 &&
-    jugador.edad < 36 &&
-    jugador.gral < 78 &&
+    jugador.edad < 40 &&
+    jugador.gral < 82 &&
     sobre < 16 &&
     (rendimiento >= 0.35 || ovacionesBienio >= 1)
   ) {

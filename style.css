@@ -947,6 +947,12 @@ button.opcion-ritmo.activo {
   font-weight: 700;
 }
 
+.sorteo-continuar {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+}
+
 .carta-origen {
   border: 1px solid var(--accent-2);
 }
