@@ -1157,23 +1157,23 @@ body::before {
   border: none;
   box-shadow: none;
   color: inherit;
-  opacity: 0.38;
+  opacity: 0.32;
   user-select: none;
   pointer-events: none;
   filter: saturate(1.05);
 }
 
-/* LEFT timeline margins / mid-left only — never right half (ficha/oferta) */
-.sticker-1 { top: 4%; left: 2%; transform: rotate(-16deg); font-size: 42px; }
-.sticker-2 { top: 14%; left: 11%; transform: rotate(12deg); font-size: 38px; }
-.sticker-3 { top: 32%; left: 1%; transform: rotate(8deg); font-size: 36px; }
-.sticker-4 { display: none; } /* was right-side */
-.sticker-5 { bottom: 22%; left: 3%; transform: rotate(18deg); font-size: 36px; }
-.sticker-6 { display: none; } /* was right-side */
-.sticker-7 { top: 58%; left: 15%; transform: rotate(-7deg); font-size: 36px; }
-.sticker-8 { top: 74%; left: 7%; transform: rotate(9deg); font-size: 38px; }
+/* Scattered around UI; avoid GRAL corner (top-right) and Oferta box (bottom-right) */
+.sticker-1 { top: 6%; left: 3%; transform: rotate(-14deg); font-size: 40px; }
+.sticker-2 { top: 5%; left: 42%; transform: rotate(11deg); font-size: 34px; }
+.sticker-3 { top: 38%; left: 2%; transform: rotate(9deg); font-size: 36px; }
+.sticker-4 { top: 30%; right: 14%; transform: rotate(-11deg); font-size: 34px; } /* mid ficha, below GRAL */
+.sticker-5 { bottom: 10%; left: 6%; transform: rotate(16deg); font-size: 34px; }
+.sticker-6 { top: 46%; left: 46%; transform: rotate(-8deg); font-size: 32px; } /* column gap */
+.sticker-7 { top: 62%; left: 18%; transform: rotate(7deg); font-size: 34px; }
+.sticker-8 { bottom: 48%; right: 6%; transform: rotate(10deg); font-size: 36px; } /* mid-right above oferta */
 
 @media (max-width: 900px) {
-  .sticker { opacity: 0.32; font-size: 28px; }
-  .sticker-7, .sticker-8 { display: none; }
+  .sticker { opacity: 0.28; font-size: 26px; }
+  .sticker-4, .sticker-6, .sticker-8 { display: none; }
 }
