@@ -1866,10 +1866,18 @@ const eventos = [
   {
     texto: "Te ofrecen abrir para una banda nacional.",
     historia: "El manager larga el WhatsApp a las 2 de la mañana: tres fechas, micro a Córdoba y vuelta sin dormir. La platea sería enorme, pero el cuerpo ya viene rasposo de la peña del finde.",
-    opcionA: {
-      texto: "Bancarte el viaje",
-      modificadores: { bonusOvaciones: 0.10, fansExtra: 800, cambioGralExtra: 3, cansancioDelta: 2 }
-    },
+    opcionA: opcionSorteo(
+      "Bancarte el viaje",
+      0.40,
+      {
+        texto: "La platea nacional te ve y el nombre salta de ciudad.",
+        modificadores: { bonusOvaciones: 0.10, fansExtra: 800, cambioGralExtra: 3, cansancioDelta: 2 }
+      },
+      {
+        texto: "El cuerpo no da: un show flojo y el micro de vuelta se siente eterno.",
+        modificadores: { bonusOvaciones: -0.04, fansExtra: 80, cambioGralExtra: -2, cansancioDelta: 3 }
+      }
+    ),
     opcionB: {
       texto: "Priorizar el cuerpo",
       modificadores: { bonusOvaciones: 0.02, fansExtra: 100, cambioGralExtra: 1, cansancioDelta: -1 }
@@ -1878,10 +1886,18 @@ const eventos = [
   {
     texto: "La gira se estira: más escenarios, menos sueño.",
     historia: "Sumaron Rosario, Santa Fe y un boliche de última hora. El batero ya no habla de mañana; habla de ibuprofeno. Queda decidir si la banda persigue el momentum o se guarda para no quebrarse.",
-    opcionA: {
-      texto: "Priorizar la gira",
-      modificadores: { bonusOvaciones: 0.08, fansExtra: 1000, cambioGralExtra: 3, cansancioDelta: 3 }
-    },
+    opcionA: opcionSorteo(
+      "Priorizar la gira",
+      0.38,
+      {
+        texto: "El momentum te lleva: más platea, más ruido, más nombre.",
+        modificadores: { bonusOvaciones: 0.08, fansExtra: 1000, cambioGralExtra: 3, cansancioDelta: 3 }
+      },
+      {
+        texto: "Se quiebra alguien en la banda y la gira se desarma a mitad de camino.",
+        modificadores: { bonusOvaciones: -0.05, fansExtra: 100, cambioGralExtra: -2, cansancioDelta: 4, showsFactor: 0.7 }
+      }
+    ),
     opcionB: {
       texto: "Bajar fechas y dormir",
       modificadores: { showsFactor: 0.75, bonusOvaciones: 0.02, fansExtra: 200, cambioGralExtra: 1, cansancioDelta: -2 }
@@ -1890,13 +1906,21 @@ const eventos = [
   {
     texto: "Un artista más grande te tienta con un feat.",
     historia: "Te mandan el dembow a medio armar y un cachetazo que cubre tres meses de ensayo. Suena a puerta grande, pero también a ceder el arreglo y firmar con el logo de otro arriba del tuyo.",
-    opcionA: {
-      texto: "Agarrar el feat",
-      modificadores: { bonusOvaciones: 0.05, fansExtra: 1200, cambioGralExtra: 3, chancePremioExtra: 0.12 }
-    },
+    opcionA: opcionSorteo(
+      "Agarrar el feat",
+      0.40,
+      {
+        texto: "El feat explota y tu nombre viaja pegado al de él.",
+        modificadores: { bonusOvaciones: 0.05, fansExtra: 1200, cambioGralExtra: 3, chancePremioExtra: 0.12 }
+      },
+      {
+        texto: "Te comen el arreglo: quedás de invitado en tu propio tema.",
+        modificadores: { bonusOvaciones: -0.04, fansExtra: 200, cambioGralExtra: -2 }
+      }
+    ),
     opcionB: {
       texto: "Cuidar tu sonido",
-      modificadores: { bonusOvaciones: 0.04, fansExtra: 200, cambioGralExtra: 2 }
+      modificadores: { bonusOvaciones: 0.04, fansExtra: 200, cambioGralExtra: 1 }
     }
   },
   {
@@ -1906,12 +1930,12 @@ const eventos = [
     prioridadCansancio: true,
     opcionA: {
       texto: "Fisio + técnica",
-      modificadores: { bonusOvaciones: 0.04, fansExtra: 200, cambioGralExtra: 2, cansancioDelta: -1 },
+      modificadores: { bonusOvaciones: 0.03, fansExtra: 150, cambioGralExtra: 1, cansancioDelta: -1, showsFactor: 0.9 },
       postEfecto: function () { jugador.cooldownTendinitis = 3; }
     },
     opcionB: {
       texto: "Bajar shows",
-      modificadores: { showsFactor: 0.7, bonusOvaciones: 0.02, fansExtra: 100, cambioGralExtra: 1, cansancioDelta: -1 },
+      modificadores: { showsFactor: 0.7, bonusOvaciones: 0.04, fansExtra: 80, cambioGralExtra: 2, cansancioDelta: -1 },
       postEfecto: function () { jugador.cooldownTendinitis = 2; }
     },
     opcionC: opcionSorteo(
@@ -1970,7 +1994,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Seguir por el circuito propio",
-      modificadores: { bonusOvaciones: 0.03, fansExtra: 150, cambioGralExtra: 2 }
+      modificadores: { bonusOvaciones: 0.03, fansExtra: 150, cambioGralExtra: 1 }
     }
   },
   {
@@ -2019,12 +2043,20 @@ const eventos = [
   },
   {
     texto: "El corte puede pelear el N.º 1 digital.",
-    historia: "El community pide plata para ads y un videoclip express. Podés empujar el single como si fuera final de Champions o dejar que labure solo y cuidar la plata del ensayo.",
+    historia: "El community pide plata para ads y un videoclip express. Empujar es jugarse el cachet del ensayo a una ruleta de streams; dejarlo laburar es cuidar la plata… y tal vez mirar cómo otro tema te pasa por arriba.",
     categorias: ["Regional"],
-    opcionA: {
-      texto: "Empujar el corte con todo",
-      modificadores: { bonusOvaciones: 0.04, fansExtra: 700, cambioGralExtra: 2, chancePremioExtra: 0.22, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Empujar el corte con todo",
+      0.40,
+      {
+        texto: "El clip pega y el corte se pelea el N.º 1 de verdad.",
+        modificadores: { bonusOvaciones: 0.05, fansExtra: 900, cambioGralExtra: 3, chancePremioExtra: 0.22 }
+      },
+      {
+        texto: "Quemás plata en ads y el tema ni entra al top: la banda te mira raro.",
+        modificadores: { bonusOvaciones: -0.03, fansExtra: 80, cambioGralExtra: -2 }
+      }
+    ),
     opcionB: {
       texto: "Dejar que labure sin forzar",
       modificadores: { fansExtra: 150, cambioGralExtra: 1 }
@@ -2055,10 +2087,18 @@ const eventos = [
     texto: "Suena tu nombre en los Premios Gardel.",
     historia: "La lista filtrada te mete en la conversación. Hacer campaña es asados con votantes, stories y sonreír de más; no hacerla es bancar el orgullo… y arriesgarte a que te pasen por al lado.",
     categorias: ["Nacional"],
-    opcionA: {
-      texto: "Hacer la campaña completa",
-      modificadores: { bonusOvaciones: 0.05, fansExtra: 900, cambioGralExtra: 2, chancePremioExtra: 0.20, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Hacer la campaña completa",
+      0.38,
+      {
+        texto: "La campaña cierra votos y el Gardel te queda cerca.",
+        modificadores: { bonusOvaciones: 0.05, fansExtra: 900, cambioGralExtra: 3, chancePremioExtra: 0.20 }
+      },
+      {
+        texto: "Sonreís de más, gastás foco y la academia ni te mira.",
+        modificadores: { bonusOvaciones: -0.02, fansExtra: 100, cambioGralExtra: -1 }
+      }
+    ),
     opcionB: {
       texto: "Dejar que hable el disco",
       modificadores: { bonusOvaciones: 0.03, fansExtra: 250, cambioGralExtra: 1 }
@@ -2068,13 +2108,21 @@ const eventos = [
     texto: "La academia latina te mete en los Latin Grammy.",
     historia: "Hay vuelo, alfombra y una foto que puede cruzar fronteras. También hay que sonreírle a gente que no conoce tu peña de origen. El manager ya compró el traje; vos todavía dudás del precio.",
     categorias: ["Internacional"],
-    opcionA: {
-      texto: "Jugar la alfombra",
-      modificadores: { bonusOvaciones: 0.05, fansExtra: 1200, cambioGralExtra: 3, chancePremioExtra: 0.18, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Jugar la alfombra",
+      0.36,
+      {
+        texto: "La alfombra te abre puertas y el nombre cruza el mapa.",
+        modificadores: { bonusOvaciones: 0.05, fansExtra: 1200, cambioGralExtra: 3, chancePremioExtra: 0.18 }
+      },
+      {
+        texto: "Quedás de figurante: plata tirada y la banda resentida.",
+        modificadores: { bonusOvaciones: -0.03, fansExtra: 150, cambioGralExtra: -2 }
+      }
+    ),
     opcionB: {
       texto: "Quedarte laburando con la banda",
-      modificadores: { bonusOvaciones: 0.04, fansExtra: 300, cambioGralExtra: 2 }
+      modificadores: { bonusOvaciones: 0.04, fansExtra: 300, cambioGralExtra: 1 }
     }
   },
   {
@@ -2124,26 +2172,44 @@ const eventos = [
     texto: "El de al lado no llega: te ofrecen cubrir todo.",
     historia: "El titular se trabó con un vuelo y el manager te mira como a la única salida. Es la chance de pasar de banco a nombre en el flyer… a costa de cargar todos los shows y las broncas ajenas.",
     roles: ["Suplente"],
-    opcionA: {
-      texto: "Agarrar el puesto completo",
-      rol: "Titular",
-      modificadores: { bonusOvaciones: 0.03, fansExtra: 250, cambioGralExtra: 2, cansancioDelta: 2 }
-    },
+    opcionA: opcionSorteo(
+      "Agarrar el puesto completo",
+      0.45,
+      {
+        texto: "Bancás la gira y el flyer siguiente ya lleva tu nombre.",
+        rol: "Titular",
+        modificadores: { bonusOvaciones: 0.04, fansExtra: 300, cambioGralExtra: 3, cansancioDelta: 2 }
+      },
+      {
+        texto: "La carga te come: fallás una fecha clave y volvés al banco.",
+        rol: "Suplente",
+        modificadores: { bonusOvaciones: -0.03, fansExtra: 40, cambioGralExtra: -2, cansancioDelta: 3 }
+      }
+    ),
     opcionB: {
       texto: "Seguir en el banco",
       rol: "Suplente",
-      modificadores: modificadoresVacios()
+      modificadores: { cambioGralExtra: 1 }
     }
   },
   {
     texto: "Quieren rotar la formación y bajarte un cambio.",
     historia: "Lo largan en el after como si fuera logística. Un pibe más joven, más barato, más 'disponible'. Es orgullo versus quedarte a pelear el lugar en una banda que ya te midió en frío.",
     roles: ["Titular"],
-    opcionA: {
-      texto: "Pelear el puesto en ensayo",
-      rol: "Titular",
-      modificadores: { bonusOvaciones: 0.04, fansExtra: 200, cambioGralExtra: 2, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Pelear el puesto en ensayo",
+      0.42,
+      {
+        texto: "Te plantás, ensayás doble y el puesto sigue siendo tuyo.",
+        rol: "Titular",
+        modificadores: { bonusOvaciones: 0.04, fansExtra: 200, cambioGralExtra: 2, cansancioDelta: 1 }
+      },
+      {
+        texto: "La pelea se ve forzada y te bajan igual.",
+        rol: "Suplente",
+        modificadores: { bonusOvaciones: -0.03, fansExtra: 40, cambioGralExtra: -1, cansancioDelta: 2 }
+      }
+    ),
     opcionB: opcionIrseDeBanda()
   },
   {
@@ -2169,10 +2235,18 @@ const eventos = [
   {
     texto: "Te llaman a un programa de TV.",
     historia: "Es exposición nacional y también un living con chistes baratos. El productor promete 'humano y cercano'; vos sabés que un gag mal parado te puede quedar pegado más que un single.",
-    opcionA: {
-      texto: "Entrar al circo",
-      modificadores: { bonusOvaciones: 0.04, fansExtra: 1400, cambioGralExtra: 3, chancePremioExtra: 0.10, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Entrar al circo",
+      0.40,
+      {
+        texto: "El gag cierra bien y la platea chica te empieza a ubicar.",
+        modificadores: { bonusOvaciones: 0.04, fansExtra: 1400, cambioGralExtra: 3, chancePremioExtra: 0.10 }
+      },
+      {
+        texto: "El chiste te deja pegado: meme fácil, respeto difícil.",
+        modificadores: { bonusOvaciones: -0.04, fansExtra: 200, cambioGralExtra: -2 }
+      }
+    ),
     opcionB: {
       texto: "Cuidar el misterio",
       modificadores: { bonusOvaciones: 0.03, fansExtra: 200, cambioGralExtra: 1 }
@@ -2220,11 +2294,20 @@ const eventos = [
     texto: "Un pibe del under te come el lugar en los ensayos.",
     historia: "Llega temprano, aprende tus partes y el técnico ya le sonríe. Podés pelearle el puesto, bajarte con dignidad… o irte antes de que la comparación se vuelva costumbre.",
     roles: ["Titular"],
-    opcionA: {
-      texto: "Pelearle el puesto",
-      rol: "Titular",
-      modificadores: { bonusOvaciones: 0.03, fansExtra: 100, cambioGralExtra: 2, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Pelearle el puesto",
+      0.42,
+      {
+        texto: "Le ganás el ensayo y el técnico vuelve a mirarte a vos.",
+        rol: "Titular",
+        modificadores: { bonusOvaciones: 0.03, fansExtra: 100, cambioGralExtra: 2, cansancioDelta: 1 }
+      },
+      {
+        texto: "La comparación te deja mal parado y te bajan un cambio.",
+        rol: "Suplente",
+        modificadores: { cambioGralExtra: -1, cansancioDelta: 1 }
+      }
+    ),
     opcionB: opcionIrseDeBanda()
   },
   {
@@ -2250,10 +2333,18 @@ const eventos = [
     texto: "El furgón pincha en la ruta hacia otro boliche.",
     historia: "Es de noche, llueve fino y el teléfono no tiene señal. Llegar igual es heroico y peligroso; cancelar es perder cachet y quedar como poco confiables frente al dueño del lugar.",
     categorias: ["Under", "Regional"],
-    opcionA: {
-      texto: "Llegar igual como sea",
-      modificadores: { bonusOvaciones: 0.08, fansExtra: 400, cambioGralExtra: 3, cansancioDelta: 3 }
-    },
+    opcionA: opcionSorteo(
+      "Llegar igual como sea",
+      0.40,
+      {
+        texto: "Llegás tarde pero tocás: el dueño no olvida el gesto.",
+        modificadores: { bonusOvaciones: 0.08, fansExtra: 400, cambioGralExtra: 3, cansancioDelta: 3 }
+      },
+      {
+        texto: "El arreglo improvisado falla y el boliche te marca como poco serios.",
+        modificadores: { fansExtra: -100, cambioGralExtra: -2, cansancioDelta: 3 }
+      }
+    ),
     opcionB: {
       texto: "Cancelar y avisar al boliche",
       modificadores: { fansExtra: -80, cambioGralExtra: -1, cansancioDelta: 1 }
@@ -2263,10 +2354,18 @@ const eventos = [
     texto: "Quieren grabar el EP en un living, de madrugada.",
     historia: "Cuatro canales, un colchón contra la pared y vecinos que todavía no reclamaron. Sale barato y con carácter… o sale a lata. Esperar un estudio limpio cuesta plata que todavía no tienen.",
     categorias: ["Under"],
-    opcionA: {
-      texto: "Grabar en el living",
-      modificadores: { bonusOvaciones: 0.05, fansExtra: 300, cambioGralExtra: 3, chancePremioExtra: 0.10, cansancioDelta: 2 }
-    },
+    opcionA: opcionSorteo(
+      "Grabar en el living",
+      0.40,
+      {
+        texto: "El living le da carácter al EP y el under lo banca.",
+        modificadores: { bonusOvaciones: 0.05, fansExtra: 300, cambioGralExtra: 3, chancePremioExtra: 0.10, cansancioDelta: 2 }
+      },
+      {
+        texto: "Sale a lata: los vecinos cortan y el audio no sirve.",
+        modificadores: { bonusOvaciones: -0.03, fansExtra: 40, cambioGralExtra: -1, cansancioDelta: 2 }
+      }
+    ),
     opcionB: {
       texto: "Esperar un estudio decente",
       modificadores: { cambioGralExtra: 1, cansancioDelta: -1, fansExtra: 50 }
@@ -2276,10 +2375,18 @@ const eventos = [
     texto: "Te ofrecen telonear: el cachet es birra.",
     historia: "Banda más grande, sala llena, plata cero. El manager dice 'exposición'. El batero pregunta quién paga la nafta. Es amistad con el circuito versus no regalar otro show.",
     categorias: ["Under", "Regional"],
-    opcionA: {
-      texto: "Tocar igual por la platea",
-      modificadores: { bonusOvaciones: 0.06, fansExtra: 600, cambioGralExtra: 3, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Tocar igual por la platea",
+      0.42,
+      {
+        texto: "La platea grande te ve y el after abre puertas.",
+        modificadores: { bonusOvaciones: 0.06, fansExtra: 600, cambioGralExtra: 3, cansancioDelta: 1 }
+      },
+      {
+        texto: "Tocás para la mitad vacía y la nafta la pusiste vos.",
+        modificadores: { fansExtra: 60, cambioGralExtra: -1, cansancioDelta: 1 }
+      }
+    ),
     opcionB: {
       texto: "No regalar el show",
       modificadores: { cambioGralExtra: 1, fansExtra: 40 }
@@ -2312,21 +2419,38 @@ const eventos = [
     texto: "Faltás a un ensayo clave y arman la lista sin vos.",
     historia: "Fue un turno, un viaje o una pelea casera: da igual. Cuando llegás, tu atril no está. Pedir perdón es tragar orgullo; irte es no bancar que te midan como reemplazable.",
     roles: ["Titular"],
-    opcionA: {
-      texto: "Pedir perdón y pelearla",
-      rol: "Titular",
-      modificadores: { cambioGralExtra: 1, cansancioDelta: 1, fansExtra: 50 }
-    },
+    opcionA: opcionSorteo(
+      "Pedir perdón y pelearla",
+      0.48,
+      {
+        texto: "Tragas orgullo, ensayás doble y recuperás el atril.",
+        rol: "Titular",
+        modificadores: { cambioGralExtra: 1, cansancioDelta: 1, fansExtra: 50 }
+      },
+      {
+        texto: "No te la compran: quedás afuera de la foto igual.",
+        rol: "Suplente",
+        modificadores: { cambioGralExtra: -1, cansancioDelta: 1 }
+      }
+    ),
     opcionB: opcionIrseDeBanda()
   },
   {
     id: "ensayo-fallido",
     texto: "El ensayo se va al demonio.",
     historia: "Nadie acuerda el puente y el batero se va antes, dejando el platillo todavía temblando. Imponer el arreglo puede cerrar el tema… o partir la sala en dos bandos hasta el próximo finde.",
-    opcionA: {
-      texto: "Imponer el arreglo",
-      modificadores: { bonusOvaciones: 0.06, fansExtra: 250, cambioGralExtra: 2, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Imponer el arreglo",
+      0.40,
+      {
+        texto: "El puente cierra y el tema queda listo para el finde.",
+        modificadores: { bonusOvaciones: 0.06, fansExtra: 250, cambioGralExtra: 2, cansancioDelta: 1 }
+      },
+      {
+        texto: "La sala se parte: dos bandos y el finde llega flojo.",
+        modificadores: { bonusOvaciones: -0.04, fansExtra: 40, cambioGralExtra: -2, cansancioDelta: 1 }
+      }
+    ),
     opcionB: {
       texto: "Bajar un cambio y escuchar",
       modificadores: { cambioGralExtra: 1, cansancioDelta: -1, bonusOvaciones: 0.02 }
@@ -2357,10 +2481,18 @@ const eventos = [
     id: "sesion-estudio",
     texto: "Sesión de estudio de madrugada, pagan poco.",
     historia: "El productor tiene contactos en radios chicas y un café quemado para toda la noche. Entrar es red y cansancio; rechazar es dormir… y que el contacto se lo lleve otro guitarrista.",
-    opcionA: {
-      texto: "Entrar al estudio",
-      modificadores: { bonusOvaciones: 0.05, fansExtra: 400, cambioGralExtra: 3, cansancioDelta: 2 }
-    },
+    opcionA: opcionSorteo(
+      "Entrar al estudio",
+      0.40,
+      {
+        texto: "El contacto prende: radio chica y un llamado que importa.",
+        modificadores: { bonusOvaciones: 0.05, fansExtra: 400, cambioGralExtra: 3, cansancioDelta: 2 }
+      },
+      {
+        texto: "La sesión se va al demonio y el productor no vuelve a marcar.",
+        modificadores: { bonusOvaciones: -0.03, fansExtra: 40, cambioGralExtra: -2, cansancioDelta: 3 }
+      }
+    ),
     opcionB: {
       texto: "Dormir y cuidar la voz",
       modificadores: { cansancioDelta: -2, cambioGralExtra: 1 }
@@ -2371,10 +2503,18 @@ const eventos = [
     texto: "Cancelan el festival: queda un telonero de urgencia.",
     historia: "El escenario grande se cae por la lluvia. Ofrecen un boliche chico a dos horas. Aceptar es no perder el finde; descansar es lo que el cuerpo pide desde el martes.",
     categorias: ["Under", "Regional"],
-    opcionA: {
-      texto: "Aceptar el telonero",
-      modificadores: { bonusOvaciones: 0.06, fansExtra: 500, cambioGralExtra: 2, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Aceptar el telonero",
+      0.42,
+      {
+        texto: "El boliche chico te salva el finde y sumás platea nueva.",
+        modificadores: { bonusOvaciones: 0.06, fansExtra: 500, cambioGralExtra: 2, cansancioDelta: 1 }
+      },
+      {
+        texto: "Viajás dos horas para tocarle a cuatro mesas.",
+        modificadores: { fansExtra: 40, cambioGralExtra: -1, cansancioDelta: 2 }
+      }
+    ),
     opcionB: {
       texto: "Descansar el fin de semana",
       modificadores: { showsFactor: 0.85, cansancioDelta: -2, cambioGralExtra: 1 }
@@ -2383,12 +2523,20 @@ const eventos = [
   {
     id: "pelea-setlist",
     texto: "Pelea de setlist: hits versus temas nuevos.",
-    historia: "El cantante quiere Garantía de platea; el resto quiere estrenar el tema del ensayo. Bancarle a los nuevos es riesgo artístico. Ir a lo seguro es paz de camerino… y un poco de resignación.",
+    historia: "El cantante quiere garantía de platea; el resto quiere estrenar el tema del ensayo. Bancarle a los nuevos es riesgo artístico. Ir a lo seguro es paz de camerino… y un poco de resignación.",
     roles: ["Titular"],
-    opcionA: {
-      texto: "Bancarle a los temas nuevos",
-      modificadores: { bonusOvaciones: 0.08, fansExtra: 450, cambioGralExtra: 3 }
-    },
+    opcionA: opcionSorteo(
+      "Bancarle a los temas nuevos",
+      0.40,
+      {
+        texto: "Los nuevos pegan y la platea pide bis del tema fresco.",
+        modificadores: { bonusOvaciones: 0.08, fansExtra: 450, cambioGralExtra: 3 }
+      },
+      {
+        texto: "La sala se enfría: vinieron por los hits y se van antes.",
+        modificadores: { bonusOvaciones: -0.05, fansExtra: 60, cambioGralExtra: -2 }
+      }
+    ),
     opcionB: {
       texto: "Ir a lo seguro con los hits",
       modificadores: { bonusOvaciones: 0.03, fansExtra: 200, cambioGralExtra: 1 }
@@ -2421,13 +2569,21 @@ const eventos = [
     texto: "Una marca quiere comprar el sonido de la banda.",
     historia: "Plata ya para un comercial de gaseosa. El under te va a marcar. El manager habla de alquiler. Es orgullo de escena versus llegar a fin de mes sin pelearte con el dueño de la sala de ensayo.",
     categorias: ["Regional", "Nacional", "Internacional"],
-    opcionA: {
-      texto: "Firmar el comercial",
-      modificadores: { fansExtra: 900, cambioGralExtra: 2, chancePremioExtra: 0.1, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Firmar el comercial",
+      0.42,
+      {
+        texto: "La plata entra y el spot te pone en bocas nuevas.",
+        modificadores: { fansExtra: 900, cambioGralExtra: 3, chancePremioExtra: 0.1, cansancioDelta: 1 }
+      },
+      {
+        texto: "El under te marca: 'vendidos'. La platea chica te da la espalda.",
+        modificadores: { bonusOvaciones: -0.05, fansExtra: 100, cambioGralExtra: -1 }
+      }
+    ),
     opcionB: {
       texto: "Rechazar y cuidar el nombre",
-      modificadores: { bonusOvaciones: 0.04, fansExtra: 150, cambioGralExtra: 2 }
+      modificadores: { bonusOvaciones: 0.04, fansExtra: 150, cambioGralExtra: 1 }
     }
   },
   {
@@ -2455,10 +2611,18 @@ const eventos = [
     id: "equipo-robado",
     texto: "Roban el equipo en la carga. El show es mañana.",
     historia: "Faltan pedales, cables y un amplificador. Pedir prestado es Frankenstein y orgullo herido; cancelar es no fallarle a la platea… fallándole igual, pero con honestidad.",
-    opcionA: {
-      texto: "Pedir prestado lo que haya",
-      modificadores: { bonusOvaciones: 0.05, fansExtra: 200, cambioGralExtra: 2, cansancioDelta: 2 }
-    },
+    opcionA: opcionSorteo(
+      "Pedir prestado lo que haya",
+      0.40,
+      {
+        texto: "El Frankenstein aguanta y la platea aplaude el aguante.",
+        modificadores: { bonusOvaciones: 0.05, fansExtra: 200, cambioGralExtra: 2, cansancioDelta: 2 }
+      },
+      {
+        texto: "El sonido se cae a mitad del set y el vivo queda marcado.",
+        modificadores: { bonusOvaciones: -0.05, fansExtra: 40, cambioGralExtra: -2, cansancioDelta: 2 }
+      }
+    ),
     opcionB: {
       texto: "Cancelar y rearmar",
       modificadores: { showsFactor: 0.6, cansancioDelta: -1, cambioGralExtra: -1 }
@@ -2469,10 +2633,18 @@ const eventos = [
     texto: "Una crítica te tilda de 'sin peligro'.",
     historia: "Duele porque hay algo de verdad. Responder en vivo es declaración de guerra; ignorar y laburar es madurez… o miedo disfrazado de profesionalismo. El camerino discute cuál de las dos es cobardía.",
     categorias: ["Nacional", "Internacional", "Leyenda"],
-    opcionA: {
-      texto: "Responder en vivo con todo",
-      modificadores: { bonusOvaciones: 0.09, fansExtra: 600, cambioGralExtra: 3, cansancioDelta: 2 }
-    },
+    opcionA: opcionSorteo(
+      "Responder en vivo con todo",
+      0.40,
+      {
+        texto: "La respuesta en vivo te reivindica y la platea se prende.",
+        modificadores: { bonusOvaciones: 0.09, fansExtra: 600, cambioGralExtra: 3, cansancioDelta: 2 }
+      },
+      {
+        texto: "Quedás soberbio: la crítica se agranda y te come la semana.",
+        modificadores: { bonusOvaciones: -0.04, fansExtra: 80, cambioGralExtra: -2, cansancioDelta: 1 }
+      }
+    ),
     opcionB: {
       texto: "Ignorar y laburar",
       modificadores: { cambioGralExtra: 1, fansExtra: 100 }
@@ -2484,13 +2656,21 @@ const eventos = [
     historia: "'Así suena la radio', dice, y pone el plugin antes de que termines la toma. Aceptar es playlist y mira rara de la base; bancar la voz cruda es orgullo… y tal vez quedarte afuera del algoritmo.",
     estilos: ["Pop", "Cumbia"],
     roles: ["Titular"],
-    opcionA: {
-      texto: "Aceptar el autotune",
-      modificadores: { fansExtra: 1200, cambioGralExtra: 2, chancePremioExtra: 0.25, bonusOvaciones: 0.03 }
-    },
+    opcionA: opcionSorteo(
+      "Aceptar el autotune",
+      0.42,
+      {
+        texto: "La radio lo pide en loop y el single escala.",
+        modificadores: { fansExtra: 1200, cambioGralExtra: 3, chancePremioExtra: 0.25, bonusOvaciones: 0.03 }
+      },
+      {
+        texto: "Suena plástico: la base te mira raro y el under te marca.",
+        modificadores: { bonusOvaciones: -0.04, fansExtra: 150, cambioGralExtra: -1 }
+      }
+    ),
     opcionB: {
       texto: "Bancar la voz cruda",
-      modificadores: { bonusOvaciones: 0.05, fansExtra: 180, cambioGralExtra: 2 }
+      modificadores: { bonusOvaciones: 0.05, fansExtra: 180, cambioGralExtra: 1 }
     }
   },
   {
@@ -2499,7 +2679,7 @@ const eventos = [
     historia: "Selfies, abrazos y una nena que llora al verte. Las cuerdas y la cabeza piden agua. Quedarte hasta el final enamora; cortar corto guarda el show de la noche. Las dos cosas son cariño de distinta forma.",
     opcionA: {
       texto: "Quedarte hasta el último fan",
-      modificadores: { fansExtra: 800, bonusOvaciones: 0.04, cambioGralExtra: 1, cansancioDelta: 3 }
+      modificadores: { fansExtra: 800, bonusOvaciones: 0.04, cambioGralExtra: 2, cansancioDelta: 3, showsFactor: 0.85 }
     },
     opcionB: {
       texto: "Saludar corto y guardar energía",
@@ -2512,13 +2692,21 @@ const eventos = [
     historia: "Dos quieren mandar el rumbo. Uno habla de singles; el otro, de gira larga. Mediar es heroico y peligroso. Bancarle a uno es lealtad… y enemigo seguro del otro. Irte es no ser el juguete de la pelea.",
     roles: ["Titular"],
     categorias: ["Under", "Regional", "Nacional"],
-    opcionA: {
-      texto: "Mediar y proponer reglas",
-      modificadores: { cambioGralExtra: 3, bonusOvaciones: 0.04, fansExtra: 200, cansancioDelta: 1 }
-    },
+    opcionA: opcionSorteo(
+      "Mediar y proponer reglas",
+      0.40,
+      {
+        texto: "Lográs una tregua y la banda sigue con vos en el medio.",
+        modificadores: { cambioGralExtra: 3, bonusOvaciones: 0.04, fansExtra: 200, cansancioDelta: 1 }
+      },
+      {
+        texto: "La mediación te deja mal con los dos y el clima se pudre.",
+        modificadores: { cambioGralExtra: -2, fansExtra: 40, cansancioDelta: 2 }
+      }
+    ),
     opcionB: {
       texto: "Bancarle a uno",
-      modificadores: { cambioGralExtra: 2, fansExtra: 150, bonusOvaciones: 0.02 }
+      modificadores: { cambioGralExtra: 1, fansExtra: 150, bonusOvaciones: 0.02 }
     },
     opcionC: opcionIrseDeBanda()
   },
@@ -2530,14 +2718,15 @@ const eventos = [
       texto: "Volver con los de siempre",
       volverOrigen: true,
       rol: "Titular",
-      modificadores: { cambioGralExtra: 2, cansancioDelta: -1 }
+      modificadores: { cambioGralExtra: 1, cansancioDelta: -1 }
     },
     opcionB: {
       texto: "Quedarte donde estás",
-      modificadores: { cambioGralExtra: 1 }
+      modificadores: { cambioGralExtra: 2 }
     }
   }
 ];
+
 
 
 
