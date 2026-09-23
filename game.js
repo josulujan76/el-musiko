@@ -173,19 +173,26 @@ function claveAvatarInstrumento(instrumento) {
   return "cantante";
 }
 
+function urlSiluetaInstrumento(instrumento) {
+  return "assets/avatares/silueta-" + claveAvatarInstrumento(instrumento) + ".png";
+}
+
 function urlAvatarInstrumento(instrumento) {
-  return "assets/avatares/avatar-" + claveAvatarInstrumento(instrumento) + ".png";
+  return urlSiluetaInstrumento(instrumento);
 }
 
 function htmlImgAvatar(instrumento, alt) {
-  const src = urlAvatarInstrumento(instrumento);
-  const a = alt || instrumento || "Avatar";
+  const src = urlSiluetaInstrumento(instrumento);
+  const a = (alt || instrumento || "Avatar").replace(/"/g, "&quot;");
   return (
-    '<img src="' +
-    src +
-    '" alt="' +
+    '<div class="carta-retrato carta-silueta" style="background:var(--avatar-bg)">' +
+    '<div class="silueta-figura" role="img" aria-label="' +
     a +
-    '" loading="lazy" decoding="async">'
+    '" style="-webkit-mask-image:url(' +
+    src +
+    ");mask-image:url(" +
+    src +
+    ');mask-size:cover;mask-position:center;background:var(--avatar-fg)"></div></div>'
   );
 }
 
@@ -238,10 +245,9 @@ function htmlCartaMusiko(jugador, opts) {
 
   if (modo === "mini") {
     return (
-      '<span class="carta-musiko carta-musiko-mini" aria-hidden="true">' +
-      '<span class="carta-retrato">' +
+      '<div class="carta-musiko carta-musiko-mini" aria-hidden="true">' +
       img +
-      "</span></span>"
+      "</div>"
     );
   }
 
@@ -249,9 +255,7 @@ function htmlCartaMusiko(jugador, opts) {
     '<div class="carta-musiko carta-musiko-' +
     modo +
     '">' +
-    '<div class="carta-retrato">' +
     img +
-    "</div>" +
     '<div class="carta-cuerpo">' +
     '<p class="carta-gral"><small>' +
     labelGral +
@@ -3608,6 +3612,7 @@ function elegirEstilo(estilo) {
       boton.classList.remove("activo");
     }
   });
+  actualizarPreviewCarta();
 }
 
 
