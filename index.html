@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>El Musiko</title>
-  <link rel="stylesheet" href="style.css?v=musiko-playtest9">
+  <link rel="stylesheet" href="style.css?v=musiko-playtest10">
 </head>
 <body>
   <div class="app">
@@ -53,11 +53,9 @@
           <label for="nombre">Nombre</label>
           <input type="text" id="nombre" oninput="actualizarPreviewCarta()">
         </div>
-        <div class="campo campo-retrato">
-          <label>Retrato</label>
-          <p class="retrato-hint">Elegí tu cara</p>
-          <input type="hidden" id="retrato" value="a1">
-          <div id="grilla-retratos" class="grilla-retratos" role="listbox" aria-label="Retratos"></div>
+        <div class="campo campo-carta-preview">
+          <label>Tu carta</label>
+          <p class="retrato-hint">El avatar cambia con el instrumento</p>
           <div id="carta-preview-wrap" class="carta-preview-wrap" aria-hidden="true"></div>
         </div>
         <div class="campo">
@@ -73,6 +71,6 @@
     </div>
     </div>
   </div>
-  <script src="game.js?v=musiko-playtest9"></script>
+  <script src="game.js?v=musiko-playtest10"></script>
 </body>
 </html>

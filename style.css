@@ -1210,7 +1210,7 @@ body::before {
 
 
 /* --- Carta Musiko (estilo Copero) --- */
-.campo-retrato {
+.campo-carta-preview {
   margin-top: 4px;
 }
 
@@ -1220,41 +1220,6 @@ body::before {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
-}
-
-.grilla-retratos {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.opcion-retrato {
-  appearance: none;
-  -webkit-appearance: none;
-  background: rgba(0, 0, 0, 0.28);
-  border: 2px solid var(--line);
-  border-radius: 14px;
-  padding: 6px;
-  cursor: pointer;
-  line-height: 0;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
-}
-
-.opcion-retrato:hover {
-  border-color: var(--accent-2);
-  transform: translateY(-1px);
-}
-
-.opcion-retrato.activo {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent), 0 8px 18px rgba(0, 0, 0, 0.35);
-}
-
-.opcion-retrato .retrato-svg {
-  width: 100%;
-  height: auto;
-  display: block;
 }
 
 .carta-preview-wrap {
@@ -1290,10 +1255,13 @@ body::before {
   justify-content: center;
 }
 
-.carta-retrato .retrato-svg {
+.carta-retrato img {
   width: 100%;
   height: 100%;
   display: block;
+  object-fit: cover;
+  object-position: center;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .carta-cuerpo {
@@ -1454,11 +1422,6 @@ body::before {
 }
 
 @media (max-width: 520px) {
-  .grilla-retratos {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-  }
-
   .carta-musiko-ficha,
   .carta-musiko-preview {
     width: 100%;

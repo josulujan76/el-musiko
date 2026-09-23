@@ -148,7 +148,7 @@ function alternarAudio() {
 }
 
 document.addEventListener("click", function (evento) {
-  const alvo = evento.target.closest("button, .btn, .carta-banda, .opcion-ritmo, .opcion-retrato");
+  const alvo = evento.target.closest("button, .btn, .carta-banda, .opcion-ritmo");
   if (!alvo) {
     return;
   }
@@ -162,124 +162,31 @@ const CLAVE_GUARDADO = "el-musiko-save-v1";
 
 
 /* --- Retratos SVG (Carta estilo Copero) --- */
-const RETRATOS_IDS = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8"];
-const RETRATO_DEFAULT = "a1";
-
-function svgRetrato(id) {
-  const S = {
-    a1: { skin: "#c68642", hair: "#2a1810", lips: "#8b3a2a", eyes: "#1a120c", brow: "#1a1008" },
-    a2: { skin: "#f1c27d", hair: "#5c3317", lips: "#c45c6a", eyes: "#3d2914", brow: "#3a1f0c" },
-    a3: { skin: "#8d5524", hair: "#120c08", lips: "#6b2e24", eyes: "#0e0a06", brow: "#0a0604" },
-    a4: { skin: "#ffdbac", hair: "#2c2424", lips: "#b06060", eyes: "#2c2218", brow: "#2a2222" },
-    a5: { skin: "#a67c52", hair: "#111111", lips: "#7a3a32", eyes: "#14100c", brow: "#0c0c0c" },
-    a6: { skin: "#d4a574", hair: "#1c1210", lips: "#9a4a42", eyes: "#1e1610", brow: "#1a100c" },
-    a7: { skin: "#ffe0bd", hair: "#c9a227", lips: "#d07080", eyes: "#4a3828", brow: "#a08030" },
-    a8: { skin: "#6b3f24", hair: "#0a0604", lips: "#5a2820", eyes: "#0c0804", brow: "#080402" }
-  };
-  const c = S[id] || S.a1;
-  const hair = {
-    a1:
-      '<path d="M18 38 C18 18 62 18 62 38 L62 44 C50 36 30 36 18 44 Z" fill="' +
-      c.hair +
-      '"/>',
-    a2:
-      '<path d="M14 36 C16 14 64 14 66 36 L68 70 C60 62 52 66 48 58 L40 72 L32 58 C28 66 20 62 12 70 Z" fill="' +
-      c.hair +
-      '"/>',
-    a3:
-      '<ellipse cx="40" cy="28" rx="28" ry="22" fill="' +
-      c.hair +
-      '"/><circle cx="22" cy="36" r="8" fill="' +
-      c.hair +
-      '"/><circle cx="58" cy="36" r="8" fill="' +
-      c.hair +
-      '"/><circle cx="30" cy="20" r="7" fill="' +
-      c.hair +
-      '"/><circle cx="50" cy="20" r="7" fill="' +
-      c.hair +
-      '"/>',
-    a4:
-      '<path d="M22 34 C24 28 56 28 58 34" fill="none" stroke="' +
-      c.hair +
-      '" stroke-width="3" stroke-linecap="round"/><path d="M24 58 Q40 72 56 58" fill="' +
-      c.hair +
-      '" opacity="0.85"/>',
-    a5:
-      '<path d="M34 8 L40 2 L46 8 L44 34 L36 34 Z" fill="' +
-      c.hair +
-      '"/><rect x="36" y="8" width="8" height="28" fill="' +
-      c.hair +
-      '"/><path d="M18 40 C22 34 58 34 62 40" fill="none" stroke="' +
-      c.hair +
-      '" stroke-width="4"/>',
-    a6:
-      '<path d="M16 34 C18 12 62 12 64 34 L66 74 C58 64 50 70 44 60 L40 76 L36 60 C30 70 22 64 14 74 Z" fill="' +
-      c.hair +
-      '"/><g stroke="#222" stroke-width="1.6" fill="none"><ellipse cx="30" cy="42" rx="7" ry="5"/><ellipse cx="50" cy="42" rx="7" ry="5"/><line x1="37" y1="42" x2="43" y2="42"/></g>',
-    a7:
-      '<path d="M18 40 C20 18 60 18 62 40 L60 46 C48 38 32 38 20 46 Z" fill="' +
-      c.hair +
-      '"/><path d="M22 32 C28 24 52 24 58 32" fill="' +
-      c.hair +
-      '"/>',
-    a8:
-      '<path d="M18 36 C20 16 60 16 62 36" fill="' +
-      c.hair +
-      '"/><path d="M20 34 Q16 50 18 68" stroke="' +
-      c.hair +
-      '" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M28 32 Q24 52 26 70" stroke="' +
-      c.hair +
-      '" stroke-width="4" fill="none"/><path d="M52 32 Q56 52 54 70" stroke="' +
-      c.hair +
-      '" stroke-width="4" fill="none"/><path d="M60 34 Q64 50 62 68" stroke="' +
-      c.hair +
-      '" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="18" cy="70" r="3" fill="' +
-      c.hair +
-      '"/><circle cx="62" cy="70" r="3" fill="' +
-      c.hair +
-      '"/>'
-  };
-  const extras = {
-    a5: '<circle cx="54" cy="50" r="1.8" fill="#c0c0c0"/>',
-    a7:
-      '<path d="M26 36 Q40 28 54 36" fill="none" stroke="' +
-      c.brow +
-      '" stroke-width="2"/>'
-  };
-  return (
-    '<svg class="retrato-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-    '<circle cx="40" cy="40" r="38" fill="rgba(0,0,0,0.25)"/>' +
-    (hair[id] || hair.a1) +
-    '<ellipse cx="40" cy="46" rx="22" ry="26" fill="' +
-    c.skin +
-    '"/>' +
-    '<ellipse cx="30" cy="44" rx="3.2" ry="3.8" fill="' +
-    c.eyes +
-    '"/>' +
-    '<ellipse cx="50" cy="44" rx="3.2" ry="3.8" fill="' +
-    c.eyes +
-    '"/>' +
-    '<circle cx="31.2" cy="42.8" r="1" fill="#fff" opacity="0.7"/>' +
-    '<circle cx="51.2" cy="42.8" r="1" fill="#fff" opacity="0.7"/>' +
-    '<path d="M26 38 Q30 36 34 38" fill="none" stroke="' +
-    c.brow +
-    '" stroke-width="1.8" stroke-linecap="round"/>' +
-    '<path d="M46 38 Q50 36 54 38" fill="none" stroke="' +
-    c.brow +
-    '" stroke-width="1.8" stroke-linecap="round"/>' +
-    '<ellipse cx="40" cy="56" rx="5" ry="2.4" fill="' +
-    c.lips +
-    '"/>' +
-    (extras[id] || "") +
-    "</svg>"
-  );
+function claveAvatarInstrumento(instrumento) {
+  const raw = String(instrumento || "").trim().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (raw === "bateria") return "bateria";
+  if (raw === "bajista") return "bajista";
+  if (raw === "guitarra") return "guitarra";
+  if (raw === "cantante") return "cantante";
+  if (raw === "percusion") return "percusion";
+  return "cantante";
 }
 
-function normalizarRetrato(id) {
-  if (typeof id === "string" && RETRATOS_IDS.includes(id)) {
-    return id;
-  }
-  return RETRATO_DEFAULT;
+function urlAvatarInstrumento(instrumento) {
+  return "assets/avatares/avatar-" + claveAvatarInstrumento(instrumento) + ".png";
+}
+
+function htmlImgAvatar(instrumento, alt) {
+  const src = urlAvatarInstrumento(instrumento);
+  const a = alt || instrumento || "Avatar";
+  return (
+    '<img src="' +
+    src +
+    '" alt="' +
+    a +
+    '" loading="lazy" decoding="async">'
+  );
 }
 
 function emojiInstrumento(instrumento) {
@@ -320,7 +227,6 @@ function htmlCartaMusiko(jugador, opts) {
   opts = opts || {};
   const modo = opts.modo || "ficha";
   const j = jugador || {};
-  const retrato = normalizarRetrato(j.retrato);
   const gral = valorGralCarta(j, modo);
   const inst = j.instrumento || "";
   const emoji = emojiInstrumento(inst);
@@ -328,12 +234,13 @@ function htmlCartaMusiko(jugador, opts) {
   const labelGral = modo === "resumen" ? "MEDIA" : "GRAL";
   const mostrarNombre = modo === "ficha" || modo === "preview" || modo === "resumen";
   const mostrarInstTexto = modo === "ficha" || modo === "preview";
+  const img = htmlImgAvatar(inst, nombre || inst);
 
   if (modo === "mini") {
     return (
       '<span class="carta-musiko carta-musiko-mini" aria-hidden="true">' +
       '<span class="carta-retrato">' +
-      svgRetrato(retrato) +
+      img +
       "</span></span>"
     );
   }
@@ -343,7 +250,7 @@ function htmlCartaMusiko(jugador, opts) {
     modo +
     '">' +
     '<div class="carta-retrato">' +
-    svgRetrato(retrato) +
+    img +
     "</div>" +
     '<div class="carta-cuerpo">' +
     '<p class="carta-gral"><small>' +
@@ -367,48 +274,6 @@ function htmlCartaMusiko(jugador, opts) {
   );
 }
 
-function leerRetratoDesdeFormulario() {
-  const el = document.getElementById("retrato");
-  return normalizarRetrato(el ? el.value : RETRATO_DEFAULT);
-}
-
-function pintarGrillaRetratos() {
-  const caja = document.getElementById("grilla-retratos");
-  if (!caja) {
-    return;
-  }
-  const actual = leerRetratoDesdeFormulario();
-  caja.innerHTML = "";
-  RETRATOS_IDS.forEach(function (id) {
-    const boton = document.createElement("button");
-    boton.type = "button";
-    boton.className = "opcion-retrato" + (id === actual ? " activo" : "");
-    boton.setAttribute("data-retrato", id);
-    boton.setAttribute("aria-label", "Retrato " + id);
-    boton.innerHTML = svgRetrato(id);
-    boton.onclick = function () {
-      elegirRetrato(id);
-    };
-    caja.appendChild(boton);
-  });
-}
-
-function elegirRetrato(id) {
-  const valor = normalizarRetrato(id);
-  const hidden = document.getElementById("retrato");
-  if (hidden) {
-    hidden.value = valor;
-  }
-  document.querySelectorAll(".opcion-retrato").forEach(function (boton) {
-    if (boton.getAttribute("data-retrato") === valor) {
-      boton.classList.add("activo");
-    } else {
-      boton.classList.remove("activo");
-    }
-  });
-  actualizarPreviewCarta();
-}
-
 function actualizarPreviewCarta() {
   const wrap = document.getElementById("carta-preview-wrap");
   if (!wrap) {
@@ -418,7 +283,6 @@ function actualizarPreviewCarta() {
   const instEl = document.getElementById("instrumento");
   wrap.innerHTML = htmlCartaMusiko(
     {
-      retrato: leerRetratoDesdeFormulario(),
       nombre: nombreEl ? nombreEl.value.trim() : "",
       instrumento: instEl ? instEl.value : "",
       gral: 50
@@ -433,7 +297,6 @@ function estadoJugadorInicial() {
   nacionalidad: "",
   estilo: "",
   instrumento: "",
-  retrato: RETRATO_DEFAULT,
   edad: 16,
   gral: 50,
   bandaActual: "",
@@ -539,7 +402,7 @@ function continuarPartida() {
     return;
   }
   jugador = Object.assign(estadoJugadorInicial(), data.jugador);
-  jugador.retrato = normalizarRetrato(jugador.retrato);
+  delete jugador.retrato;
   delete jugador.avatar;
   if (!jugador.solista) {
     jugador.solista = normalizarSolista(null);
@@ -599,7 +462,7 @@ function actualizarMenuInicio() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () { actualizarMenuInicio(); actualizarBotonMute(); pintarGrillaRetratos(); actualizarPreviewCarta(); });
+document.addEventListener("DOMContentLoaded", function () { actualizarMenuInicio(); actualizarBotonMute(); actualizarPreviewCarta(); });
 
 const exigenciaBandas = {
   Under: 40,
@@ -3823,7 +3686,6 @@ function irACrearMusico() {
   });
 
   elegirInstrumento(instrumentos[0]);
-  pintarGrillaRetratos();
   actualizarPreviewCarta();
 
   transicionarPantallas("pantalla1", "pantalla2");
@@ -3864,7 +3726,6 @@ function comenzarCarrera() {
   jugador.nacionalidad = nacionalidad;
   jugador.estilo = estilo;
   jugador.instrumento = instrumento;
-  jugador.retrato = leerRetratoDesdeFormulario();
   jugador.modo =
     document.getElementById("modo").value === "Intenso"
       ? "Intenso"
