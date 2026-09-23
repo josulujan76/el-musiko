@@ -173,12 +173,27 @@ function claveAvatarInstrumento(instrumento) {
   return "cantante";
 }
 
-function urlAvatarInstrumento(instrumento) {
-  return "assets/avatares/avatar-" + claveAvatarInstrumento(instrumento) + ".png?v=musiko-playtest15";
+function claveAvatarEstilo(estilo) {
+  const raw = String(estilo || "").trim().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (raw === "pop") return "pop";
+  if (raw === "cumbia") return "cumbia";
+  if (raw === "reggae") return "reggae";
+  return "rock";
 }
 
-function htmlImgAvatar(instrumento, alt) {
-  const src = urlAvatarInstrumento(instrumento);
+function urlAvatarInstrumento(instrumento, estilo) {
+  return (
+    "assets/avatares/avatar-" +
+    claveAvatarInstrumento(instrumento) +
+    "-" +
+    claveAvatarEstilo(estilo) +
+    ".png?v=musiko-playtest16"
+  );
+}
+
+function htmlImgAvatar(instrumento, alt, estilo) {
+  const src = urlAvatarInstrumento(instrumento, estilo);
   const a = (alt || instrumento || "Avatar").replace(/"/g, "&quot;");
   return (
     '<div class="carta-retrato carta-foto" style="background:var(--avatar-bg);border-color:var(--avatar-fg)">' +
@@ -235,7 +250,8 @@ function htmlCartaMusiko(jugador, opts) {
   const labelGral = modo === "resumen" ? "MEDIA" : "GRAL";
   const mostrarNombre = modo === "ficha" || modo === "preview" || modo === "resumen";
   const mostrarInstTexto = modo === "ficha" || modo === "preview";
-  const img = htmlImgAvatar(inst, nombre || inst);
+  const estilo = j.estilo || "";
+  const img = htmlImgAvatar(inst, nombre || inst, estilo);
 
   if (modo === "mini") {
     return (
@@ -279,10 +295,12 @@ function actualizarPreviewCarta() {
   }
   const nombreEl = document.getElementById("nombre");
   const instEl = document.getElementById("instrumento");
+  const estiloEl = document.getElementById("estilo");
   wrap.innerHTML = htmlCartaMusiko(
     {
       nombre: nombreEl ? nombreEl.value.trim() : "",
       instrumento: instEl ? instEl.value : "",
+      estilo: estiloEl ? estiloEl.value : "",
       gral: 50
     },
     { modo: "preview" }
