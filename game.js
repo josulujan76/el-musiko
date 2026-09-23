@@ -3737,8 +3737,8 @@ jugador.ovaciones += ovacionesBienio;
 jugador.solos += solosBienio;
 
 // Evolucion del GRAL (curva estilo Copero: potencial + club + rendimiento)
-  // Retune playtest2: soft ceiling early, Regional caps tighter at high GRAL,
-  // soft floor only young/mid-70s, mild aging drag from ~38.
+  // Retune playtest3: elite soft ceiling harder (habitual peak ~88-92; 95 rare),
+  // Regional caps unchanged, soft floor only young/mid-70s, mild aging drag from ~38.
   const potencialCarrera = 94;
   const exigenciaGral =
     exigenciaBandas[jugador.reputacionBandaActual] || 40;
@@ -3907,29 +3907,6 @@ jugador.solos += solosBienio;
     cambioGral = 1;
   }
 
-  // Soft ceiling ladder (antes solo >=93): frena Regional 90s sin matar mid-70s.
-  // En Under/Regional, 90+ casi no sube (95+/99 quedan para Nacional/Leyenda).
-  if (clubChico && jugador.gral >= 90) {
-    if (cambioGral > 0) cambioGral = Math.random() < 0.12 ? 1 : 0;
-  } else if (clubChico && jugador.gral >= 86) {
-    if (cambioGral > 1) cambioGral = 1;
-    if (cambioGral > 0 && Math.random() < 0.4) cambioGral = 0;
-  } else if (jugador.gral >= 97) {
-    if (cambioGral > 0) cambioGral = Math.random() < 0.08 ? 1 : 0;
-  } else if (jugador.gral >= 95) {
-    if (cambioGral > 1) cambioGral = 1;
-    if (cambioGral > 0 && Math.random() < 0.75) cambioGral = 0;
-  } else if (jugador.gral >= 92) {
-    if (cambioGral > 1) cambioGral = 1;
-    if (cambioGral > 0 && Math.random() < 0.55) cambioGral = 0;
-  } else if (jugador.gral >= 88) {
-    if (cambioGral > 1) cambioGral = 1;
-  } else if (jugador.gral >= 85) {
-    if (cambioGral > 2) cambioGral = 2;
-  } else if (jugador.gral >= potencialCarrera - 1 && cambioGral > 1) {
-    cambioGral = Math.min(cambioGral, 1);
-  }
-
   let deltaGral =
     cambioGral + (jugador.modificadoresBienio.cambioGralExtra || 0);
 
@@ -3941,6 +3918,34 @@ jugador.solos += solosBienio;
   }
   if (clubChicoFinal && deltaGral < -capChico) {
     deltaGral = -capChico;
+  }
+
+  // Soft ceiling ladder playtest3: apply on final deltaGral (after event extras)
+  // so +2/+3 de evento no perforan el techo elite. Soft floor arriba queda intacto.
+  // Under/Regional: igual que playtest2. Nacional+: amortigua desde 82; max+1 desde 85;
+  // a menudo 0 desde 88-90; 93-94 raro; 95+ casi nunca.
+  if (clubChicoFinal && jugador.gral >= 90) {
+    if (deltaGral > 0) deltaGral = Math.random() < 0.12 ? 1 : 0;
+  } else if (clubChicoFinal && jugador.gral >= 86) {
+    if (deltaGral > 1) deltaGral = 1;
+    if (deltaGral > 0 && Math.random() < 0.4) deltaGral = 0;
+  } else if (jugador.gral >= 95) {
+    if (deltaGral > 0) deltaGral = Math.random() < 0.04 ? 1 : 0;
+  } else if (jugador.gral >= 93) {
+    if (deltaGral > 1) deltaGral = 1;
+    if (deltaGral > 0 && Math.random() < 0.92) deltaGral = 0;
+  } else if (jugador.gral >= 90) {
+    if (deltaGral > 1) deltaGral = 1;
+    if (deltaGral > 0 && Math.random() < 0.78) deltaGral = 0;
+  } else if (jugador.gral >= 88) {
+    if (deltaGral > 1) deltaGral = 1;
+    if (deltaGral > 0 && Math.random() < 0.50) deltaGral = 0;
+  } else if (jugador.gral >= 85) {
+    if (deltaGral > 1) deltaGral = 1;
+  } else if (jugador.gral >= 82) {
+    if (deltaGral > 2) deltaGral = 2;
+  } else if (jugador.gral >= potencialCarrera - 1 && deltaGral > 1) {
+    deltaGral = Math.min(deltaGral, 1);
   }
 
   jugador.gral += deltaGral;
