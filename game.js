@@ -173,26 +173,20 @@ function claveAvatarInstrumento(instrumento) {
   return "cantante";
 }
 
-function urlSiluetaInstrumento(instrumento) {
-  return "assets/avatares/silueta-" + claveAvatarInstrumento(instrumento) + ".png";
-}
-
 function urlAvatarInstrumento(instrumento) {
-  return urlSiluetaInstrumento(instrumento);
+  return "assets/avatares/avatar-" + claveAvatarInstrumento(instrumento) + ".png";
 }
 
 function htmlImgAvatar(instrumento, alt) {
-  const src = urlSiluetaInstrumento(instrumento);
+  const src = urlAvatarInstrumento(instrumento);
   const a = (alt || instrumento || "Avatar").replace(/"/g, "&quot;");
   return (
-    '<div class="carta-retrato carta-silueta" style="background:var(--avatar-bg)">' +
-    '<div class="silueta-figura" role="img" aria-label="' +
+    '<div class="carta-retrato carta-foto" style="background:var(--avatar-bg);border-color:var(--avatar-fg)">' +
+    '<img src="' +
+    src +
+    '" alt="' +
     a +
-    '" style="-webkit-mask-image:url(' +
-    src +
-    ");mask-image:url(" +
-    src +
-    ');mask-size:cover;mask-position:center;background:var(--avatar-fg)"></div></div>'
+    '"></div>'
   );
 }
 

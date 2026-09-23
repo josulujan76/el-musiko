@@ -1272,22 +1272,20 @@ body::before {
   image-rendering: -webkit-optimize-contrast;
 }
 
-.carta-retrato.carta-silueta {
+.carta-retrato.carta-foto {
   background: var(--avatar-bg);
-  padding: 0;
+  border: 3px solid var(--avatar-fg);
+  padding: 3px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--avatar-fg) 55%, transparent);
 }
 
-.carta-silueta .silueta-figura {
+.carta-foto img {
   width: 100%;
   height: 100%;
   display: block;
-  background: var(--avatar-fg);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: cover;
-  mask-size: cover;
-  -webkit-mask-position: center;
-  mask-position: center;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
 }
 
 .carta-cuerpo {
