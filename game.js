@@ -3737,8 +3737,8 @@ jugador.ovaciones += ovacionesBienio;
 jugador.solos += solosBienio;
 
 // Evolucion del GRAL (curva estilo Copero: potencial + club + rendimiento)
-  // Retune playtest3: elite soft ceiling harder (habitual peak ~88-92; 95 rare),
-  // Regional caps unchanged, soft floor only young/mid-70s, mild aging drag from ~38.
+  // Retune playtest4: elite soft ceiling kept (~88-92 peak); real late decline
+  // after ~36-38 (mandatory drag, net-negative past 40 if gral>=85). Soft floor untouched.
   const potencialCarrera = 94;
   const exigenciaGral =
     exigenciaBandas[jugador.reputacionBandaActual] || 40;
@@ -3820,14 +3820,21 @@ jugador.solos += solosBienio;
   }
 
   if (jugador.instrumento === "Bajista") {
-    if (cambioGral < -1) {
-      cambioGral = -1;
+    // Late career needs visible drops; loosen floor after peak window.
+    const pisoBajo = jugador.edad >= 40 ? -2 : -1;
+    if (cambioGral < pisoBajo) {
+      cambioGral = pisoBajo;
     }
   }
 
   if (jugador.instrumento === "Bateria" || jugador.instrumento === "Batería") {
+    // Soften late buff so aging drag still shows (was +0.8 and fought decline).
     if (jugador.edad >= 37 && cambioGral < 0) {
-      cambioGral += 0.8;
+      if (jugador.edad >= 40) {
+        cambioGral += 0.25;
+      } else {
+        cambioGral += 0.45;
+      }
     }
   }
 
@@ -3841,27 +3848,67 @@ jugador.solos += solosBienio;
     cambioGral *= 0.9;
   }
 
-  // Aging drift: leve desde ~38 aun en buenas temporadas; mas fuerte si flojo
-  if (jugador.edad >= 38) {
-    cambioGral -= 0.15 + Math.random() * 0.2;
-  }
-  if (jugador.edad >= 40 && rendimiento < 0.55) {
-    cambioGral -= 0.35 + Math.random() * 0.4;
-  }
-  if (jugador.edad >= 43 && rendimiento < 0.45) {
-    cambioGral -= 0.45;
-  }
-  if (jugador.edad >= 42 && rendimiento >= 0.55) {
-    // Buena temporada late-career: todavia un poco de desgaste
-    cambioGral -= 0.2;
+  // Aging drag playtest4: after peak window (~34-38) GRAL tends down even on
+  // decent Intenso seasons. Strong seasons only slow the drop, not erase it.
+  // Values are per-year; bienio (~1.7x) so two-year steps still drop visibly.
+  if (jugador.edad >= 36) {
+    let dragMin;
+    let dragMax;
+    if (jugador.edad >= 43) {
+      dragMin = 1.5;
+      dragMax = 2.3;
+    } else if (jugador.edad >= 40) {
+      dragMin = 1.0;
+      dragMax = 2.0;
+    } else if (jugador.edad >= 38) {
+      dragMin = 0.6;
+      dragMax = 1.2;
+    } else {
+      // 36-37: small mandatory drag (climb still possible mid-80s)
+      dragMin = 0.2;
+      dragMax = 0.45;
+    }
+    let agingDrag = dragMin + Math.random() * (dragMax - dragMin);
+
+    // Excelente rendimiento: reduce ~30-40% but keep net negative late+high
+    if (rendimiento >= 1.05) {
+      agingDrag *= 0.62;
+    } else if (rendimiento >= 0.85) {
+      agingDrag *= 0.72;
+    } else if (rendimiento >= 0.65) {
+      agingDrag *= 0.88;
+    }
+
+    if (anios > 1) {
+      agingDrag *= 1.7;
+    }
+
+    cambioGral -= agingDrag;
+
+    // Past ~40 at elite: force net negative even after strong positive base
+    if (jugador.edad >= 40 && jugador.gral >= 85) {
+      let pisoNeg =
+        rendimiento >= 1.05 ? -0.55 : rendimiento >= 0.75 ? -0.85 : -1.25;
+      if (anios > 1) {
+        pisoNeg *= 1.5;
+      }
+      if (cambioGral > pisoNeg) {
+        cambioGral = pisoNeg;
+      }
+    } else if (jugador.edad >= 38 && jugador.gral >= 88 && cambioGral > 0.35) {
+      // Peak plateau: strong seasons at best near-flat, slight drop tendency
+      cambioGral = 0.35 - Math.random() * 0.7;
+    }
   }
 
-  // Soft overqualified dampen: no congelar el trepe mid-70s hacia Nacional
+  // Soft overqualified dampen: only on climbs (must not shrink late declines)
   const sobre = jugador.gral - exigenciaGral;
-  if (sobre > 22) {
-    cambioGral *= 0.65;
-  } else if (sobre > 16) {
-    cambioGral *= 0.85;
+  if (cambioGral > 0) {
+    if (sobre > 22) {
+      cambioGral *= 0.65;
+    } else if (sobre > 16) {
+      cambioGral *= 0.85;
+    }
   }
 
   // Caps base: Under/Regional year +3 / bienio +4; Nacional+ year +4 / bienio +5
@@ -4100,6 +4147,7 @@ function scrollearLineaTiempoAlFinal() {
 
 
 function mediaCarrera() {
+  // Peak GRAL of career (Copero "MEDIA" / valoración máxima), not arithmetic mean.
   const grales = jugador.historial
     .map(etapa => etapa.gral)
     .filter(valor => typeof valor === "number");
@@ -4108,11 +4156,7 @@ function mediaCarrera() {
     return jugador.gral;
   }
 
-  return Math.round(
-    grales.reduce(function (suma, valor) {
-      return suma + valor;
-    }, 0) / grales.length
-  );
+  return Math.max.apply(null, grales);
 }
 
 
@@ -4126,19 +4170,22 @@ function bandasDeLaCarrera() {
 
 
 function nivelLegadoCarrera() {
-  if (jugador.gral >= 92) {
+  // Legacy from career peak (mediaCarrera), not final faded GRAL.
+  const pico = mediaCarrera();
+
+  if (pico >= 92) {
     return "LEYENDA DE LA MÚSICA";
   }
 
-  if (jugador.gral >= 85) {
+  if (pico >= 85) {
     return "ESTRELLA INTERNACIONAL";
   }
 
-  if (jugador.gral >= 75) {
+  if (pico >= 75) {
     return "REFERENTE NACIONAL";
   }
 
-  if (jugador.gral >= 65) {
+  if (pico >= 65) {
     return "MÚSICO RECONOCIDO";
   }
 
@@ -4169,6 +4216,7 @@ function mostrarResumenCarrera() {
     listaBandas = "<li>No formaste parte de ninguna banda.</li>";
   }
 
+  const hdrs = headersTimeline();
   const overlay = document.createElement("div");
   overlay.className = "resumen-overlay visible";
   overlay.innerHTML = `
@@ -4180,7 +4228,12 @@ function mostrarResumenCarrera() {
       <div class="resumen-media">
         <small>MEDIA</small>
         <strong>${mediaCarrera()}</strong>
+        <p class="muted" style="font-size:11px;margin:6px 0 0;letter-spacing:0.06em">mejor de la carrera</p>
       </div>
+
+      <p class="muted" style="font-size:12px;margin:0 0 14px;text-align:center;line-height:1.45">
+        ${jugador.shows || 0} ${hdrs.shows} · ${jugador.ovaciones || 0} ${hdrs.ovaciones} · ${jugador.solos || 0} ${hdrs.solos} · ${(jugador.fans || 0).toLocaleString("es-AR")} fans
+      </p>
 
       <div class="resumen-bloque">
         <h3>BANDAS</h3>
