@@ -1288,6 +1288,10 @@ function textoEfecto(opcion) {
     partes.push("Más shows");
   }
 
+  if (partes.length === 0) {
+    return "Sin cambio";
+  }
+
   return partes.join(" · ");
 }
 
@@ -1880,7 +1884,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Priorizar el cuerpo",
-      modificadores: { bonusOvaciones: 0.02, fansExtra: 100, cambioGralExtra: 1, cansancioDelta: -1 }
+      modificadores: { bonusOvaciones: 0.02, fansExtra: 100, cambioGralExtra: 0, cansancioDelta: -1 }
     }
   },
   {
@@ -1900,7 +1904,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Bajar fechas y dormir",
-      modificadores: { showsFactor: 0.75, bonusOvaciones: 0.02, fansExtra: 200, cambioGralExtra: 1, cansancioDelta: -2 }
+      modificadores: { showsFactor: 0.75, bonusOvaciones: 0.02, fansExtra: 200, cambioGralExtra: 0, cansancioDelta: -2 }
     }
   },
   {
@@ -1972,7 +1976,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Cederle el cupo a otra banda",
-      modificadores: { bonusOvaciones: 0.02, fansExtra: 80, cambioGralExtra: 1 }
+      modificadores: { bonusOvaciones: 0.02, fansExtra: 80, cambioGralExtra: 0 }
     }
   },
   {
@@ -2016,7 +2020,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Guardar energía para la peña",
-      modificadores: { cansancioDelta: -1, cambioGralExtra: 1, fansExtra: 80 }
+      modificadores: { cansancioDelta: -1, cambioGralExtra: 0, fansExtra: 80 }
     }
   },
   {
@@ -2038,7 +2042,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Bancarle al DJ local el cupo",
-      modificadores: { cambioGralExtra: 1, fansExtra: 100, bonusOvaciones: 0.02 }
+      modificadores: { cambioGralExtra: 0, fansExtra: 100, bonusOvaciones: 0.02 }
     }
   },
   {
@@ -2059,7 +2063,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Dejar que labure sin forzar",
-      modificadores: { fansExtra: 150, cambioGralExtra: 1 }
+      modificadores: { fansExtra: 150, cambioGralExtra: 0 }
     }
   },
   {
@@ -2189,7 +2193,7 @@ const eventos = [
     opcionB: {
       texto: "Seguir en el banco",
       rol: "Suplente",
-      modificadores: { cambioGralExtra: 1 }
+      modificadores: { cambioGralExtra: 0 }
     }
   },
   {
@@ -2229,7 +2233,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Dejar la cara en paz",
-      modificadores: { cambioGralExtra: 1 }
+      modificadores: { cambioGralExtra: 0 }
     }
   },
   {
@@ -2249,7 +2253,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Cuidar el misterio",
-      modificadores: { bonusOvaciones: 0.03, fansExtra: 200, cambioGralExtra: 1 }
+      modificadores: { bonusOvaciones: 0.03, fansExtra: 200, cambioGralExtra: 0 }
     }
   },
   {
@@ -2269,7 +2273,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Pasar el sobre y pedir agua",
-      modificadores: { cambioGralExtra: 1, cansancioDelta: -1 }
+      modificadores: { cambioGralExtra: 0, cansancioDelta: -1 }
     }
   },
   {
@@ -2389,7 +2393,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "No regalar el show",
-      modificadores: { cambioGralExtra: 1, fansExtra: 40 }
+      modificadores: { cambioGralExtra: 0, fansExtra: 40 }
     }
   },
   {
@@ -2412,7 +2416,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Cederle el lugar a otro suplente",
-      modificadores: { cambioGralExtra: 1, cansancioDelta: -1 }
+      modificadores: { cambioGralExtra: 0, cansancioDelta: -1 }
     }
   },
   {
@@ -2495,7 +2499,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Dormir y cuidar la voz",
-      modificadores: { cansancioDelta: -2, cambioGralExtra: 1 }
+      modificadores: { cansancioDelta: -2, cambioGralExtra: 0 }
     }
   },
   {
@@ -2517,7 +2521,7 @@ const eventos = [
     ),
     opcionB: {
       texto: "Descansar el fin de semana",
-      modificadores: { showsFactor: 0.85, cansancioDelta: -2, cambioGralExtra: 1 }
+      modificadores: { showsFactor: 0.85, cansancioDelta: -2, cambioGralExtra: 0 }
     }
   },
   {
@@ -2683,7 +2687,7 @@ const eventos = [
     },
     opcionB: {
       texto: "Saludar corto y guardar energía",
-      modificadores: { fansExtra: 200, cansancioDelta: -1, showsFactor: 1, cambioGralExtra: 1 }
+      modificadores: { fansExtra: 200, cansancioDelta: -1, showsFactor: 1, cambioGralExtra: 0 }
     }
   },
   {
