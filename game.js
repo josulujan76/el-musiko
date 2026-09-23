@@ -3737,6 +3737,8 @@ jugador.ovaciones += ovacionesBienio;
 jugador.solos += solosBienio;
 
 // Evolucion del GRAL (curva estilo Copero: potencial + club + rendimiento)
+  // Retune playtest2: soft ceiling early, Regional caps tighter at high GRAL,
+  // soft floor only young/mid-70s, mild aging drag from ~38.
   const potencialCarrera = 94;
   const exigenciaGral =
     exigenciaBandas[jugador.reputacionBandaActual] || 40;
@@ -3752,16 +3754,16 @@ jugador.solos += solosBienio;
   } else if (jugador.edad < 34) {
     factorEdad = 1.00;
   } else if (jugador.edad < 38) {
-    factorEdad = 0.9;
+    factorEdad = 0.8;
   } else if (jugador.edad < 42) {
-    factorEdad = 0.7;
+    factorEdad = 0.55;
   } else {
-    factorEdad = 0.4;
+    factorEdad = 0.3;
   }
 
   const factorClub = {
-    Under: 0.78,
-    Regional: 0.92,
+    Under: 0.70,
+    Regional: 0.84,
     Nacional: 1.12,
     Internacional: 1.28,
     Leyenda: 1.38
@@ -3780,11 +3782,12 @@ jugador.solos += solosBienio;
 
   if (rendimiento >= 0.55) {
     // Bienio solido: creces hacia el potencial; clubes grandes ensenan mas.
+    // Hueco coeff 0.022 (antes 0.028) para no disparar mid-80s en Regional.
     const base =
-      0.55 + huecoPotencial * 0.028 + Math.min(1.4, rendimiento);
+      0.55 + huecoPotencial * 0.022 + Math.min(1.4, rendimiento);
     cambioGral = base * factorEdad * factorClub;
   } else if (rendimiento >= 0.35) {
-    cambioGral = (0.25 + huecoPotencial * 0.015) * factorEdad;
+    cambioGral = (0.25 + huecoPotencial * 0.012) * factorEdad;
   } else if (jugador.gral > exigenciaGral + 8) {
     // Muy por arriba de la banda y rindiendo mal: estancamiento suave.
     cambioGral = -0.4;
@@ -3833,16 +3836,24 @@ jugador.solos += solosBienio;
   }
 
   // Escala suave solo en modo Intenso (1 año); bienio queda en 1.0
+  // (no reintroducir doble penalizacion Intenso)
   if (anios === 1) {
     cambioGral *= 0.9;
   }
 
-  // Aging drift: solo si el rendimiento es flojo (no castigar carrera solida)
+  // Aging drift: leve desde ~38 aun en buenas temporadas; mas fuerte si flojo
+  if (jugador.edad >= 38) {
+    cambioGral -= 0.15 + Math.random() * 0.2;
+  }
   if (jugador.edad >= 40 && rendimiento < 0.55) {
-    cambioGral -= 0.25 + Math.random() * 0.35;
+    cambioGral -= 0.35 + Math.random() * 0.4;
   }
   if (jugador.edad >= 43 && rendimiento < 0.45) {
-    cambioGral -= 0.3;
+    cambioGral -= 0.45;
+  }
+  if (jugador.edad >= 42 && rendimiento >= 0.55) {
+    // Buena temporada late-career: todavia un poco de desgaste
+    cambioGral -= 0.2;
   }
 
   // Soft overqualified dampen: no congelar el trepe mid-70s hacia Nacional
@@ -3853,31 +3864,32 @@ jugador.solos += solosBienio;
     cambioGral *= 0.85;
   }
 
-  // Caps: Under/Regional year +3 / bienio +4; Nacional+ year +4 / bienio +5
-  const capChico = anios === 1 ? 3 : 4;
+  // Caps base: Under/Regional year +3 / bienio +4; Nacional+ year +4 / bienio +5
+  // Si ya vas alto en club chico, apretar: gral>=78 year +2; >=88 year +1
+  const clubChico =
+    jugador.reputacionBandaActual === "Under" ||
+    jugador.reputacionBandaActual === "Regional";
+  let capChico = anios === 1 ? 3 : 4;
+  if (clubChico && jugador.gral >= 88) {
+    capChico = anios === 1 ? 1 : 2;
+  } else if (clubChico && jugador.gral >= 78) {
+    capChico = anios === 1 ? 2 : 3;
+  }
   const capGrande = anios === 1 ? 4 : 5;
-  if (
-    (jugador.reputacionBandaActual === "Under" ||
-      jugador.reputacionBandaActual === "Regional") &&
-    cambioGral > capChico
-  ) {
+  if (clubChico && cambioGral > capChico) {
     cambioGral = capChico;
   }
-  if (
-    jugador.reputacionBandaActual !== "Under" &&
-    jugador.reputacionBandaActual !== "Regional" &&
-    cambioGral > capGrande
-  ) {
+  if (!clubChico && cambioGral > capGrande) {
     cambioGral = capGrande;
   }
 
   cambioGral = Math.round(cambioGral);
 
-  // Soft floor +1 mid career (edad < 40); ayuda a llegar a umbral Nacional (~75)
+  // Soft floor +1 solo joven/mid: edad < 36 y gral < 75 (antes 40/82 disparaba)
   if (
     cambioGral < 1 &&
-    jugador.edad < 40 &&
-    jugador.gral < 82 &&
+    jugador.edad < 36 &&
+    jugador.gral < 75 &&
     sobre < 16 &&
     (rendimiento >= 0.35 || ovacionesBienio >= 1)
   ) {
@@ -3887,21 +3899,33 @@ jugador.solos += solosBienio;
   if (
     cambioGral < 1 &&
     jugador.edad < 28 &&
-    (jugador.reputacionBandaActual === "Under" ||
-      jugador.reputacionBandaActual === "Regional") &&
+    clubChico &&
     rendimiento >= 0.5 &&
-    jugador.gral < 82 &&
+    jugador.gral < 75 &&
     sobre < 14
   ) {
     cambioGral = 1;
   }
 
-  // Soft ceiling: >=93 max +1; >=96 50% chance 0 (allow mid-80s/low-90s)
-  if (jugador.gral >= 96) {
+  // Soft ceiling ladder (antes solo >=93): frena Regional 90s sin matar mid-70s.
+  // En Under/Regional, 90+ casi no sube (95+/99 quedan para Nacional/Leyenda).
+  if (clubChico && jugador.gral >= 90) {
+    if (cambioGral > 0) cambioGral = Math.random() < 0.12 ? 1 : 0;
+  } else if (clubChico && jugador.gral >= 86) {
     if (cambioGral > 1) cambioGral = 1;
-    if (cambioGral > 0 && Math.random() < 0.5) cambioGral = 0;
-  } else if (jugador.gral >= 93) {
+    if (cambioGral > 0 && Math.random() < 0.4) cambioGral = 0;
+  } else if (jugador.gral >= 97) {
+    if (cambioGral > 0) cambioGral = Math.random() < 0.08 ? 1 : 0;
+  } else if (jugador.gral >= 95) {
     if (cambioGral > 1) cambioGral = 1;
+    if (cambioGral > 0 && Math.random() < 0.75) cambioGral = 0;
+  } else if (jugador.gral >= 92) {
+    if (cambioGral > 1) cambioGral = 1;
+    if (cambioGral > 0 && Math.random() < 0.55) cambioGral = 0;
+  } else if (jugador.gral >= 88) {
+    if (cambioGral > 1) cambioGral = 1;
+  } else if (jugador.gral >= 85) {
+    if (cambioGral > 2) cambioGral = 2;
   } else if (jugador.gral >= potencialCarrera - 1 && cambioGral > 1) {
     cambioGral = Math.min(cambioGral, 1);
   }
@@ -3909,11 +3933,9 @@ jugador.solos += solosBienio;
   let deltaGral =
     cambioGral + (jugador.modificadoresBienio.cambioGralExtra || 0);
 
-  const clubChicoFinal =
-    jugador.reputacionBandaActual === "Under" ||
-    jugador.reputacionBandaActual === "Regional";
+  const clubChicoFinal = clubChico;
 
-  // Event extras cannot break small-club cap (year +3 / bienio +4)
+  // Event extras cannot break small-club cap
   if (clubChicoFinal && deltaGral > capChico) {
     deltaGral = capChico;
   }
