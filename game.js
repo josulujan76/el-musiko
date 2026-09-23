@@ -188,7 +188,7 @@ function urlAvatarInstrumento(instrumento, estilo) {
     claveAvatarInstrumento(instrumento) +
     "-" +
     claveAvatarEstilo(estilo) +
-    ".png?v=musiko-playtest16"
+    ".png?v=musiko-playtest17"
   );
 }
 
