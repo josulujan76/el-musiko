@@ -1209,97 +1209,241 @@ body::before {
 }
 
 
-/* --- Avatar El Musiko --- */
-.campo-avatar {
+/* --- Carta Musiko (estilo Copero) --- */
+.campo-retrato {
   margin-top: 4px;
 }
 
-.avatar-preview-wrap {
-  display: flex;
-  justify-content: center;
-  margin: 8px 0 14px;
-}
-
-.avatar-musiko {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, rgba(255, 214, 120, 0.28), rgba(80, 12, 18, 0.55));
-  border: 2px solid var(--accent, #e8b84a);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 6px 16px rgba(0, 0, 0, 0.35);
-  font-size: 28px;
-  line-height: 1;
-  flex-shrink: 0;
-  vertical-align: middle;
-  user-select: none;
-}
-
-.avatar-musiko-preview {
-  width: 88px;
-  height: 88px;
-  font-size: 46px;
-}
-
-.avatar-musiko-mini {
-  width: 28px;
-  height: 28px;
-  font-size: 14px;
-  border-width: 1px;
-  vertical-align: middle;
-  margin-right: 6px;
-}
-
-.avatar-musiko-resumen {
-  width: 48px;
-  height: 48px;
-  font-size: 24px;
-}
-
-.avatar-chip-label {
-  margin: 10px 0 6px;
+.retrato-hint {
+  margin: 4px 0 10px;
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
-.ritmo-avatar {
-  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
-}
-
-.ritmo-avatar-acc {
+.grilla-retratos {
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
-.ritmo-avatar .opcion-ritmo {
-  text-align: center;
-  padding: 10px 8px;
-  font-size: 13px;
+.opcion-retrato {
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(0, 0, 0, 0.28);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 6px;
+  cursor: pointer;
+  line-height: 0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+.opcion-retrato:hover {
+  border-color: var(--accent-2);
+  transform: translateY(-1px);
+}
+
+.opcion-retrato.activo {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+.opcion-retrato .retrato-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.carta-preview-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 6px;
+}
+
+.carta-musiko {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background:
+    linear-gradient(145deg, rgba(255, 214, 120, 0.12), rgba(0, 0, 0, 0.35)),
+    var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+
+.carta-retrato {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 214, 120, 0.22), rgba(40, 10, 12, 0.7));
+  border: 2px solid var(--accent-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carta-retrato .retrato-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.carta-cuerpo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  gap: 4px;
+}
+
+.carta-gral {
+  margin: 0;
+  line-height: 1;
+}
+
+.carta-gral small {
+  display: block;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  font-size: 11px;
+}
+
+.carta-gral strong {
+  display: block;
+  font-size: 42px;
+  line-height: 0.95;
+  color: var(--accent);
+}
+
+.carta-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  min-width: 0;
+}
+
+.carta-inst {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.carta-inst-nombre {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.carta-nombre {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
+/* Modos */
+.carta-musiko-preview {
+  width: 100%;
+  max-width: 320px;
+}
+
+.carta-musiko-preview .carta-retrato {
+  width: 84px;
+  height: 84px;
+}
+
+.carta-musiko-preview .carta-gral strong {
+  font-size: 48px;
+}
+
+.carta-musiko-ficha {
+  flex: 0 0 auto;
+}
+
+.carta-musiko-ficha .carta-retrato {
+  width: 88px;
+  height: 88px;
+}
+
+.carta-musiko-ficha .carta-gral strong {
+  font-size: 52px;
+}
+
+.carta-musiko-resumen {
+  flex: 0 0 auto;
+}
+
+.carta-musiko-resumen .carta-retrato {
+  width: 76px;
+  height: 76px;
+}
+
+.carta-musiko-resumen .carta-gral strong {
+  font-size: 44px;
+}
+
+.carta-musiko-mini {
+  display: inline-flex;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.carta-musiko-mini .carta-retrato {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border-width: 1px;
 }
 
 .ficha-identidad {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 14px;
   min-width: 0;
+  width: 100%;
 }
 
 .ficha-identidad-texto {
   min-width: 0;
+  flex: 1;
 }
 
-.ficha-identidad .avatar-musiko {
-  margin-top: 2px;
+.ficha-top {
+  align-items: stretch;
 }
 
-.resumen-nombre-avatar {
+.resumen-identidad {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.resumen-identidad-texto {
+  text-align: left;
+  min-width: 0;
+}
+
+.resumen-identidad-texto h2 {
+  margin: 0 0 4px;
 }
 
 #resumen-partida-guardada {
@@ -1310,24 +1454,33 @@ body::before {
 }
 
 @media (max-width: 520px) {
-  .ritmo-avatar-acc {
-    grid-template-columns: 1fr 1fr;
+  .grilla-retratos {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
   }
 
-  .avatar-musiko-preview {
-    width: 76px;
-    height: 76px;
+  .carta-musiko-ficha,
+  .carta-musiko-preview {
+    width: 100%;
+  }
+
+  .carta-musiko-ficha .carta-retrato,
+  .carta-musiko-preview .carta-retrato {
+    width: 68px;
+    height: 68px;
+  }
+
+  .carta-musiko-ficha .carta-gral strong,
+  .carta-musiko-preview .carta-gral strong {
     font-size: 40px;
   }
 
   .ficha-identidad {
-    gap: 10px;
+    flex-direction: column;
+    gap: 12px;
   }
 
-  .avatar-musiko {
-    width: 48px;
-    height: 48px;
-    font-size: 24px;
+  .carta-nombre {
+    max-width: 140px;
   }
 }
-

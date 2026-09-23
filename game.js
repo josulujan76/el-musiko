@@ -148,7 +148,7 @@ function alternarAudio() {
 }
 
 document.addEventListener("click", function (evento) {
-  const alvo = evento.target.closest("button, .btn, .carta-banda, .opcion-ritmo");
+  const alvo = evento.target.closest("button, .btn, .carta-banda, .opcion-ritmo, .opcion-retrato");
   if (!alvo) {
     return;
   }
@@ -161,148 +161,270 @@ document.addEventListener("click", function (evento) {
 const CLAVE_GUARDADO = "el-musiko-save-v1";
 
 
-function avatarPorDefecto() {
-  return {
-    genero: "elle",
-    pelo: "corto",
-    look: "rock",
-    accesorio: "nada"
+/* --- Retratos SVG (Carta estilo Copero) --- */
+const RETRATOS_IDS = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8"];
+const RETRATO_DEFAULT = "a1";
+
+function svgRetrato(id) {
+  const S = {
+    a1: { skin: "#c68642", hair: "#2a1810", lips: "#8b3a2a", eyes: "#1a120c", brow: "#1a1008" },
+    a2: { skin: "#f1c27d", hair: "#5c3317", lips: "#c45c6a", eyes: "#3d2914", brow: "#3a1f0c" },
+    a3: { skin: "#8d5524", hair: "#120c08", lips: "#6b2e24", eyes: "#0e0a06", brow: "#0a0604" },
+    a4: { skin: "#ffdbac", hair: "#2c2424", lips: "#b06060", eyes: "#2c2218", brow: "#2a2222" },
+    a5: { skin: "#a67c52", hair: "#111111", lips: "#7a3a32", eyes: "#14100c", brow: "#0c0c0c" },
+    a6: { skin: "#d4a574", hair: "#1c1210", lips: "#9a4a42", eyes: "#1e1610", brow: "#1a100c" },
+    a7: { skin: "#ffe0bd", hair: "#c9a227", lips: "#d07080", eyes: "#4a3828", brow: "#a08030" },
+    a8: { skin: "#6b3f24", hair: "#0a0604", lips: "#5a2820", eyes: "#0c0804", brow: "#080402" }
   };
-}
-
-function normalizarAvatar(avatar) {
-  const base = avatarPorDefecto();
-  if (!avatar || typeof avatar !== "object") {
-    return base;
-  }
-  const generos = ["ella", "elle", "él"];
-  const pelos = ["corto", "largo", "mohawk", "rapado"];
-  const looks = ["rock", "cumbia", "indie"];
-  const accesorios = ["nada", "pañuelo", "lentes", "piercing"];
-  return {
-    genero: generos.includes(avatar.genero) ? avatar.genero : base.genero,
-    pelo: pelos.includes(avatar.pelo) ? avatar.pelo : base.pelo,
-    look: looks.includes(avatar.look) ? avatar.look : base.look,
-    accesorio: accesorios.includes(avatar.accesorio) ? avatar.accesorio : base.accesorio
+  const c = S[id] || S.a1;
+  const hair = {
+    a1:
+      '<path d="M18 38 C18 18 62 18 62 38 L62 44 C50 36 30 36 18 44 Z" fill="' +
+      c.hair +
+      '"/>',
+    a2:
+      '<path d="M14 36 C16 14 64 14 66 36 L68 70 C60 62 52 66 48 58 L40 72 L32 58 C28 66 20 62 12 70 Z" fill="' +
+      c.hair +
+      '"/>',
+    a3:
+      '<ellipse cx="40" cy="28" rx="28" ry="22" fill="' +
+      c.hair +
+      '"/><circle cx="22" cy="36" r="8" fill="' +
+      c.hair +
+      '"/><circle cx="58" cy="36" r="8" fill="' +
+      c.hair +
+      '"/><circle cx="30" cy="20" r="7" fill="' +
+      c.hair +
+      '"/><circle cx="50" cy="20" r="7" fill="' +
+      c.hair +
+      '"/>',
+    a4:
+      '<path d="M22 34 C24 28 56 28 58 34" fill="none" stroke="' +
+      c.hair +
+      '" stroke-width="3" stroke-linecap="round"/><path d="M24 58 Q40 72 56 58" fill="' +
+      c.hair +
+      '" opacity="0.85"/>',
+    a5:
+      '<path d="M34 8 L40 2 L46 8 L44 34 L36 34 Z" fill="' +
+      c.hair +
+      '"/><rect x="36" y="8" width="8" height="28" fill="' +
+      c.hair +
+      '"/><path d="M18 40 C22 34 58 34 62 40" fill="none" stroke="' +
+      c.hair +
+      '" stroke-width="4"/>',
+    a6:
+      '<path d="M16 34 C18 12 62 12 64 34 L66 74 C58 64 50 70 44 60 L40 76 L36 60 C30 70 22 64 14 74 Z" fill="' +
+      c.hair +
+      '"/><g stroke="#222" stroke-width="1.6" fill="none"><ellipse cx="30" cy="42" rx="7" ry="5"/><ellipse cx="50" cy="42" rx="7" ry="5"/><line x1="37" y1="42" x2="43" y2="42"/></g>',
+    a7:
+      '<path d="M18 40 C20 18 60 18 62 40 L60 46 C48 38 32 38 20 46 Z" fill="' +
+      c.hair +
+      '"/><path d="M22 32 C28 24 52 24 58 32" fill="' +
+      c.hair +
+      '"/>',
+    a8:
+      '<path d="M18 36 C20 16 60 16 62 36" fill="' +
+      c.hair +
+      '"/><path d="M20 34 Q16 50 18 68" stroke="' +
+      c.hair +
+      '" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M28 32 Q24 52 26 70" stroke="' +
+      c.hair +
+      '" stroke-width="4" fill="none"/><path d="M52 32 Q56 52 54 70" stroke="' +
+      c.hair +
+      '" stroke-width="4" fill="none"/><path d="M60 34 Q64 50 62 68" stroke="' +
+      c.hair +
+      '" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="18" cy="70" r="3" fill="' +
+      c.hair +
+      '"/><circle cx="62" cy="70" r="3" fill="' +
+      c.hair +
+      '"/>'
   };
+  const extras = {
+    a5: '<circle cx="54" cy="50" r="1.8" fill="#c0c0c0"/>',
+    a7:
+      '<path d="M26 36 Q40 28 54 36" fill="none" stroke="' +
+      c.brow +
+      '" stroke-width="2"/>'
+  };
+  return (
+    '<svg class="retrato-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<circle cx="40" cy="40" r="38" fill="rgba(0,0,0,0.25)"/>' +
+    (hair[id] || hair.a1) +
+    '<ellipse cx="40" cy="46" rx="22" ry="26" fill="' +
+    c.skin +
+    '"/>' +
+    '<ellipse cx="30" cy="44" rx="3.2" ry="3.8" fill="' +
+    c.eyes +
+    '"/>' +
+    '<ellipse cx="50" cy="44" rx="3.2" ry="3.8" fill="' +
+    c.eyes +
+    '"/>' +
+    '<circle cx="31.2" cy="42.8" r="1" fill="#fff" opacity="0.7"/>' +
+    '<circle cx="51.2" cy="42.8" r="1" fill="#fff" opacity="0.7"/>' +
+    '<path d="M26 38 Q30 36 34 38" fill="none" stroke="' +
+    c.brow +
+    '" stroke-width="1.8" stroke-linecap="round"/>' +
+    '<path d="M46 38 Q50 36 54 38" fill="none" stroke="' +
+    c.brow +
+    '" stroke-width="1.8" stroke-linecap="round"/>' +
+    '<ellipse cx="40" cy="56" rx="5" ry="2.4" fill="' +
+    c.lips +
+    '"/>' +
+    (extras[id] || "") +
+    "</svg>"
+  );
 }
 
-/* Mapa determinista genero|pelo|look → emoji (36 claves, ~18 glifos distintos).
-   Look visual (rock/cumbia/indie) es independiente del estilo musical de carrera. */
-const AVATAR_EMOJI_MAP = {
-  "ella|corto|rock": "👩‍🎤",
-  "ella|corto|cumbia": "💃",
-  "ella|corto|indie": "👩",
-  "ella|largo|rock": "👩‍🎤",
-  "ella|largo|cumbia": "💃",
-  "ella|largo|indie": "👱‍♀️",
-  "ella|mohawk|rock": "👩‍🎤",
-  "ella|mohawk|cumbia": "👩‍🦱",
-  "ella|mohawk|indie": "👩‍🦱",
-  "ella|rapado|rock": "👩‍🎤",
-  "ella|rapado|cumbia": "👩",
-  "ella|rapado|indie": "👩‍🦲",
-  "elle|corto|rock": "🧑‍🎤",
-  "elle|corto|cumbia": "🧑‍🎤",
-  "elle|corto|indie": "🧑",
-  "elle|largo|rock": "🧑‍🎤",
-  "elle|largo|cumbia": "🧑‍🎤",
-  "elle|largo|indie": "👱",
-  "elle|mohawk|rock": "🧑‍🎤",
-  "elle|mohawk|cumbia": "🧑‍🦱",
-  "elle|mohawk|indie": "🧑‍🦱",
-  "elle|rapado|rock": "🧑‍🎤",
-  "elle|rapado|cumbia": "🧑",
-  "elle|rapado|indie": "🧑‍🦲",
-  "él|corto|rock": "👨‍🎤",
-  "él|corto|cumbia": "🕺",
-  "él|corto|indie": "👨",
-  "él|largo|rock": "👨‍🎤",
-  "él|largo|cumbia": "🕺",
-  "él|largo|indie": "👱‍♂️",
-  "él|mohawk|rock": "👨‍🎤",
-  "él|mohawk|cumbia": "👨‍🦱",
-  "él|mohawk|indie": "👨‍🦱",
-  "él|rapado|rock": "🧔",
-  "él|rapado|cumbia": "👨‍🦲",
-  "él|rapado|indie": "👨‍🦲"
-};
-
-const AVATAR_ACCESORIO_EMOJI = {
-  nada: "",
-  pañuelo: "🧣",
-  lentes: "🕶️",
-  piercing: "💎"
-};
-
-function emojiAvatar(jugadorOAvatar) {
-  let avatar;
-  if (jugadorOAvatar && jugadorOAvatar.avatar) {
-    avatar = normalizarAvatar(jugadorOAvatar.avatar);
-  } else if (jugadorOAvatar && (jugadorOAvatar.genero || jugadorOAvatar.pelo || jugadorOAvatar.look)) {
-    avatar = normalizarAvatar(jugadorOAvatar);
-  } else {
-    avatar = avatarPorDefecto();
+function normalizarRetrato(id) {
+  if (typeof id === "string" && RETRATOS_IDS.includes(id)) {
+    return id;
   }
-  const clave = avatar.genero + "|" + avatar.pelo + "|" + avatar.look;
-  const base = AVATAR_EMOJI_MAP[clave] || "🧑‍🎤";
-  const extra = AVATAR_ACCESORIO_EMOJI[avatar.accesorio] || "";
-  return extra ? base + " " + extra : base;
+  return RETRATO_DEFAULT;
 }
 
-function htmlAvatarBadge(jugadorOAvatar, claseExtra) {
-  const emoji = emojiAvatar(jugadorOAvatar);
-  const clase = "avatar-musiko" + (claseExtra ? " " + claseExtra : "");
-  return '<span class="' + clase + '" aria-hidden="true">' + emoji + "</span>";
+function emojiInstrumento(instrumento) {
+  const mapa = {
+    Cantante: "🎤",
+    Guitarra: "🎸",
+    Bajista: "🎸",
+    "Batería": "🥁",
+    Bateria: "🥁",
+    "Percusión": "🥁",
+    Percusion: "🥁"
+  };
+  return mapa[instrumento] || "🎵";
 }
 
-function leerAvatarDesdeFormulario() {
-  const generoEl = document.getElementById("avatar-genero");
-  const peloEl = document.getElementById("avatar-pelo");
-  const lookEl = document.getElementById("avatar-look");
-  const accEl = document.getElementById("avatar-accesorio");
-  return normalizarAvatar({
-    genero: generoEl ? generoEl.value : "elle",
-    pelo: peloEl ? peloEl.value : "corto",
-    look: lookEl ? lookEl.value : "rock",
-    accesorio: accEl ? accEl.value : "nada"
+function valorGralCarta(jugador, modo) {
+  if (modo === "resumen") {
+    if (jugador && Array.isArray(jugador.historial) && jugador.historial.length) {
+      const nums = jugador.historial
+        .map(function (e) {
+          return e && e.gral;
+        })
+        .filter(function (n) {
+          return typeof n === "number";
+        });
+      if (nums.length) {
+        return Math.max.apply(null, nums);
+      }
+    }
+  }
+  if (jugador && typeof jugador.gral === "number") {
+    return jugador.gral;
+  }
+  return 50;
+}
+
+function htmlCartaMusiko(jugador, opts) {
+  opts = opts || {};
+  const modo = opts.modo || "ficha";
+  const j = jugador || {};
+  const retrato = normalizarRetrato(j.retrato);
+  const gral = valorGralCarta(j, modo);
+  const inst = j.instrumento || "";
+  const emoji = emojiInstrumento(inst);
+  const nombre = j.nombre || "";
+  const labelGral = modo === "resumen" ? "MEDIA" : "GRAL";
+  const mostrarNombre = modo === "ficha" || modo === "preview" || modo === "resumen";
+  const mostrarInstTexto = modo === "ficha" || modo === "preview";
+
+  if (modo === "mini") {
+    return (
+      '<span class="carta-musiko carta-musiko-mini" aria-hidden="true">' +
+      '<span class="carta-retrato">' +
+      svgRetrato(retrato) +
+      "</span></span>"
+    );
+  }
+
+  return (
+    '<div class="carta-musiko carta-musiko-' +
+    modo +
+    '">' +
+    '<div class="carta-retrato">' +
+    svgRetrato(retrato) +
+    "</div>" +
+    '<div class="carta-cuerpo">' +
+    '<p class="carta-gral"><small>' +
+    labelGral +
+    "</small><strong>" +
+    gral +
+    "</strong></p>" +
+    '<div class="carta-meta">' +
+    '<span class="carta-inst" title="' +
+    inst +
+    '">' +
+    emoji +
+    "</span>" +
+    (mostrarInstTexto && inst
+      ? '<span class="carta-inst-nombre">' + inst + "</span>"
+      : "") +
+    (mostrarNombre && nombre
+      ? '<span class="carta-nombre">' + nombre + "</span>"
+      : "") +
+    "</div></div></div>"
+  );
+}
+
+function leerRetratoDesdeFormulario() {
+  const el = document.getElementById("retrato");
+  return normalizarRetrato(el ? el.value : RETRATO_DEFAULT);
+}
+
+function pintarGrillaRetratos() {
+  const caja = document.getElementById("grilla-retratos");
+  if (!caja) {
+    return;
+  }
+  const actual = leerRetratoDesdeFormulario();
+  caja.innerHTML = "";
+  RETRATOS_IDS.forEach(function (id) {
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.className = "opcion-retrato" + (id === actual ? " activo" : "");
+    boton.setAttribute("data-retrato", id);
+    boton.setAttribute("aria-label", "Retrato " + id);
+    boton.innerHTML = svgRetrato(id);
+    boton.onclick = function () {
+      elegirRetrato(id);
+    };
+    caja.appendChild(boton);
   });
 }
 
-function actualizarPreviewAvatar() {
-  const preview = document.getElementById("avatar-preview");
-  if (!preview) {
-    return;
-  }
-  preview.textContent = emojiAvatar(leerAvatarDesdeFormulario());
-}
-
-function elegirAvatar(campo, valor) {
-  const ids = {
-    genero: "avatar-genero",
-    pelo: "avatar-pelo",
-    look: "avatar-look",
-    accesorio: "avatar-accesorio"
-  };
-  const id = ids[campo];
-  if (!id) {
-    return;
-  }
-  const hidden = document.getElementById(id);
+function elegirRetrato(id) {
+  const valor = normalizarRetrato(id);
+  const hidden = document.getElementById("retrato");
   if (hidden) {
     hidden.value = valor;
   }
-  const botones = document.querySelectorAll(
-    '.opcion-avatar[data-avatar-campo="' + campo + '"]'
-  );
-  botones.forEach(function (boton) {
-    if (boton.getAttribute("data-avatar-valor") === valor) {
+  document.querySelectorAll(".opcion-retrato").forEach(function (boton) {
+    if (boton.getAttribute("data-retrato") === valor) {
       boton.classList.add("activo");
     } else {
       boton.classList.remove("activo");
     }
   });
-  actualizarPreviewAvatar();
+  actualizarPreviewCarta();
+}
+
+function actualizarPreviewCarta() {
+  const wrap = document.getElementById("carta-preview-wrap");
+  if (!wrap) {
+    return;
+  }
+  const nombreEl = document.getElementById("nombre");
+  const instEl = document.getElementById("instrumento");
+  wrap.innerHTML = htmlCartaMusiko(
+    {
+      retrato: leerRetratoDesdeFormulario(),
+      nombre: nombreEl ? nombreEl.value.trim() : "",
+      instrumento: instEl ? instEl.value : "",
+      gral: 50
+    },
+    { modo: "preview" }
+  );
 }
 
 function estadoJugadorInicial() {
@@ -311,7 +433,7 @@ function estadoJugadorInicial() {
   nacionalidad: "",
   estilo: "",
   instrumento: "",
-  avatar: avatarPorDefecto(),
+  retrato: RETRATO_DEFAULT,
   edad: 16,
   gral: 50,
   bandaActual: "",
@@ -417,7 +539,8 @@ function continuarPartida() {
     return;
   }
   jugador = Object.assign(estadoJugadorInicial(), data.jugador);
-  jugador.avatar = normalizarAvatar(jugador.avatar);
+  jugador.retrato = normalizarRetrato(jugador.retrato);
+  delete jugador.avatar;
   if (!jugador.solista) {
     jugador.solista = normalizarSolista(null);
   } else {
@@ -463,9 +586,9 @@ function actualizarMenuInicio() {
     const estado = j.carreraTerminada
       ? "carrera terminada"
       : ("edad " + j.edad);
-    const avatarMini = htmlAvatarBadge(j, "avatar-musiko-mini");
+    const cartaMini = htmlCartaMusiko(j, { modo: "mini" });
     resumen.innerHTML =
-      avatarMini +
+      cartaMini +
       " <span>" +
       j.nombre +
       " | " +
@@ -476,7 +599,7 @@ function actualizarMenuInicio() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () { actualizarMenuInicio(); actualizarBotonMute(); actualizarPreviewAvatar(); });
+document.addEventListener("DOMContentLoaded", function () { actualizarMenuInicio(); actualizarBotonMute(); pintarGrillaRetratos(); actualizarPreviewCarta(); });
 
 const exigenciaBandas = {
   Under: 40,
@@ -3641,6 +3764,7 @@ function elegirInstrumento(nombre) {
       boton.classList.remove("activo");
     }
   });
+  actualizarPreviewCarta();
 }
 
 
@@ -3699,7 +3823,8 @@ function irACrearMusico() {
   });
 
   elegirInstrumento(instrumentos[0]);
-  actualizarPreviewAvatar();
+  pintarGrillaRetratos();
+  actualizarPreviewCarta();
 
   transicionarPantallas("pantalla1", "pantalla2");
 }
@@ -3739,7 +3864,7 @@ function comenzarCarrera() {
   jugador.nacionalidad = nacionalidad;
   jugador.estilo = estilo;
   jugador.instrumento = instrumento;
-  jugador.avatar = leerAvatarDesdeFormulario();
+  jugador.retrato = leerRetratoDesdeFormulario();
   jugador.modo =
     document.getElementById("modo").value === "Intenso"
       ? "Intenso"
@@ -4498,13 +4623,12 @@ function mostrarResumenCarrera() {
   overlay.innerHTML = `
     <div class="resumen-carta">
       <p class="premio-alerta-marca">FIN DE CARRERA</p>
-      <h2 class="resumen-nombre-avatar">${htmlAvatarBadge(jugador, "avatar-musiko-resumen")}<span>${jugador.nombre}</span></h2>
-      <p class="muted legado">${nivelLegadoCarrera()}</p>
-
-      <div class="resumen-media">
-        <small>MEDIA</small>
-        <strong>${mediaCarrera()}</strong>
-        <p class="muted" style="font-size:11px;margin:6px 0 0;letter-spacing:0.06em">mejor de la carrera</p>
+      <div class="resumen-identidad">
+        ${htmlCartaMusiko(jugador, { modo: "resumen" })}
+        <div class="resumen-identidad-texto">
+          <h2>${jugador.nombre}</h2>
+          <p class="muted legado">${nivelLegadoCarrera()}</p>
+        </div>
       </div>
 
       <p class="muted" style="font-size:12px;margin:0 0 14px;text-align:center;line-height:1.45">
@@ -4788,7 +4912,7 @@ function mostrarPantallaPrincipal() {
           <section class="ficha">
             <div class="ficha-top">
               <div class="ficha-identidad">
-                ${htmlAvatarBadge(jugador)}
+                ${htmlCartaMusiko(jugador, { modo: "ficha" })}
                 <div class="ficha-identidad-texto">
                 <p class="banda-actual">
                   ${mostrarLogoBanda(jugador.bandaActual, 44)}
@@ -4801,11 +4925,6 @@ function mostrarPantallaPrincipal() {
                 </p>
                 </div>
               </div>
-
-              <p class="gral">
-                <small>GRAL</small>
-                <strong>${jugador.gral}</strong>
-              </p>
             </div>
 
             <div class="chips">
