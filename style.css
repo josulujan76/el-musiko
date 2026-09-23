@@ -473,6 +473,26 @@ button.opcion-ritmo.activo {
   color: var(--muted);
 }
 
+.evento-titulo {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.evento-historia {
+  margin: 0 0 14px;
+  max-width: 42rem;
+  line-height: 1.45;
+  font-size: 0.92rem;
+  opacity: 0.85;
+}
+
+.app-carrera .evento-historia {
+  padding-right: 4px;
+}
+
+
 .legado {
   font-size: 15px;
 }
