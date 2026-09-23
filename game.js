@@ -174,7 +174,7 @@ function claveAvatarInstrumento(instrumento) {
 }
 
 function urlAvatarInstrumento(instrumento) {
-  return "assets/avatares/avatar-" + claveAvatarInstrumento(instrumento) + ".png";
+  return "assets/avatares/avatar-" + claveAvatarInstrumento(instrumento) + ".png?v=musiko-playtest15";
 }
 
 function htmlImgAvatar(instrumento, alt) {
