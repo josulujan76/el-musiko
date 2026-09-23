@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>El Musiko</title>
-  <link rel="stylesheet" href="style.css?v=musiko-playtest7">
+  <link rel="stylesheet" href="style.css?v=musiko-playtest8">
 </head>
 <body>
   <div class="app">
@@ -53,6 +53,46 @@
           <label for="nombre">Nombre</label>
           <input type="text" id="nombre">
         </div>
+        <div class="campo campo-avatar">
+          <label>Look</label>
+          <div class="avatar-preview-wrap">
+            <div id="avatar-preview" class="avatar-musiko avatar-musiko-preview" aria-hidden="true">🧑‍🎤</div>
+          </div>
+          <input type="hidden" id="avatar-genero" value="elle">
+          <input type="hidden" id="avatar-pelo" value="corto">
+          <input type="hidden" id="avatar-look" value="rock">
+          <input type="hidden" id="avatar-accesorio" value="nada">
+
+          <p class="avatar-chip-label">Género</p>
+          <div class="ritmo ritmo-avatar">
+            <button type="button" class="opcion-ritmo opcion-avatar" data-avatar-campo="genero" data-avatar-valor="ella" onclick="elegirAvatar('genero','ella')">ella</button>
+            <button type="button" class="opcion-ritmo opcion-avatar activo" data-avatar-campo="genero" data-avatar-valor="elle" onclick="elegirAvatar('genero','elle')">elle</button>
+            <button type="button" class="opcion-ritmo opcion-avatar" data-avatar-campo="genero" data-avatar-valor="él" onclick="elegirAvatar('genero','él')">él</button>
+          </div>
+
+          <p class="avatar-chip-label">Pelo</p>
+          <div class="ritmo ritmo-avatar">
+            <button type="button" class="opcion-ritmo opcion-avatar activo" data-avatar-campo="pelo" data-avatar-valor="corto" onclick="elegirAvatar('pelo','corto')">corto</button>
+            <button type="button" class="opcion-ritmo opcion-avatar" data-avatar-campo="pelo" data-avatar-valor="largo" onclick="elegirAvatar('pelo','largo')">largo</button>
+            <button type="button" class="opcion-ritmo opcion-avatar" data-avatar-campo="pelo" data-avatar-valor="mohawk" onclick="elegirAvatar('pelo','mohawk')">mohawk</button>
+            <button type="button" class="opcion-ritmo opcion-avatar" data-avatar-campo="pelo" data-avatar-valor="rapado" onclick="elegirAvatar('pelo','rapado')">rapado</button>
+          </div>
+
+          <p class="avatar-chip-label">Look</p>
+          <div class="ritmo ritmo-avatar">
+            <button type="button" class="opcion-ritmo opcion-avatar activo" data-avatar-campo="look" data-avatar-valor="rock" onclick="elegirAvatar('look','rock')">rock</button>
+            <button type="button" class="opcion-ritmo opcion-avatar" data-avatar-campo="look" data-avatar-valor="cumbia" onclick="elegirAvatar('look','cumbia')">cumbia</button>
+            <button type="button" class="opcion-ritmo opcion-avatar" data-avatar-campo="look" data-avatar-valor="indie" onclick="elegirAvatar('look','indie')">indie</button>
+          </div>
+
+          <p class="avatar-chip-label">Accesorio</p>
+          <div class="ritmo ritmo-avatar ritmo-avatar-acc">
+            <button type="button" class="opcion-ritmo opcion-avatar activo" data-avatar-campo="accesorio" data-avatar-valor="nada" onclick="elegirAvatar('accesorio','nada')">nada</button>
+            <button type="button" class="opcion-ritmo opcion-avatar" data-avatar-campo="accesorio" data-avatar-valor="pañuelo" onclick="elegirAvatar('accesorio','pañuelo')">pañuelo</button>
+            <button type="button" class="opcion-ritmo opcion-avatar" data-avatar-campo="accesorio" data-avatar-valor="lentes" onclick="elegirAvatar('accesorio','lentes')">lentes</button>
+            <button type="button" class="opcion-ritmo opcion-avatar" data-avatar-campo="accesorio" data-avatar-valor="piercing" onclick="elegirAvatar('accesorio','piercing')">piercing</button>
+          </div>
+        </div>
         <div class="campo">
           <label>Instrumento</label>
           <input type="hidden" id="instrumento" value="">
@@ -66,6 +106,6 @@
     </div>
     </div>
   </div>
-  <script src="game.js?v=musiko-playtest7"></script>
+  <script src="game.js?v=musiko-playtest8"></script>
 </body>
 </html>

@@ -160,12 +160,158 @@ document.addEventListener("click", function (evento) {
 
 const CLAVE_GUARDADO = "el-musiko-save-v1";
 
+
+function avatarPorDefecto() {
+  return {
+    genero: "elle",
+    pelo: "corto",
+    look: "rock",
+    accesorio: "nada"
+  };
+}
+
+function normalizarAvatar(avatar) {
+  const base = avatarPorDefecto();
+  if (!avatar || typeof avatar !== "object") {
+    return base;
+  }
+  const generos = ["ella", "elle", "él"];
+  const pelos = ["corto", "largo", "mohawk", "rapado"];
+  const looks = ["rock", "cumbia", "indie"];
+  const accesorios = ["nada", "pañuelo", "lentes", "piercing"];
+  return {
+    genero: generos.includes(avatar.genero) ? avatar.genero : base.genero,
+    pelo: pelos.includes(avatar.pelo) ? avatar.pelo : base.pelo,
+    look: looks.includes(avatar.look) ? avatar.look : base.look,
+    accesorio: accesorios.includes(avatar.accesorio) ? avatar.accesorio : base.accesorio
+  };
+}
+
+/* Mapa determinista genero|pelo|look → emoji (36 claves, ~18 glifos distintos).
+   Look visual (rock/cumbia/indie) es independiente del estilo musical de carrera. */
+const AVATAR_EMOJI_MAP = {
+  "ella|corto|rock": "👩‍🎤",
+  "ella|corto|cumbia": "💃",
+  "ella|corto|indie": "👩",
+  "ella|largo|rock": "👩‍🎤",
+  "ella|largo|cumbia": "💃",
+  "ella|largo|indie": "👱‍♀️",
+  "ella|mohawk|rock": "👩‍🎤",
+  "ella|mohawk|cumbia": "👩‍🦱",
+  "ella|mohawk|indie": "👩‍🦱",
+  "ella|rapado|rock": "👩‍🎤",
+  "ella|rapado|cumbia": "👩",
+  "ella|rapado|indie": "👩‍🦲",
+  "elle|corto|rock": "🧑‍🎤",
+  "elle|corto|cumbia": "🧑‍🎤",
+  "elle|corto|indie": "🧑",
+  "elle|largo|rock": "🧑‍🎤",
+  "elle|largo|cumbia": "🧑‍🎤",
+  "elle|largo|indie": "👱",
+  "elle|mohawk|rock": "🧑‍🎤",
+  "elle|mohawk|cumbia": "🧑‍🦱",
+  "elle|mohawk|indie": "🧑‍🦱",
+  "elle|rapado|rock": "🧑‍🎤",
+  "elle|rapado|cumbia": "🧑",
+  "elle|rapado|indie": "🧑‍🦲",
+  "él|corto|rock": "👨‍🎤",
+  "él|corto|cumbia": "🕺",
+  "él|corto|indie": "👨",
+  "él|largo|rock": "👨‍🎤",
+  "él|largo|cumbia": "🕺",
+  "él|largo|indie": "👱‍♂️",
+  "él|mohawk|rock": "👨‍🎤",
+  "él|mohawk|cumbia": "👨‍🦱",
+  "él|mohawk|indie": "👨‍🦱",
+  "él|rapado|rock": "🧔",
+  "él|rapado|cumbia": "👨‍🦲",
+  "él|rapado|indie": "👨‍🦲"
+};
+
+const AVATAR_ACCESORIO_EMOJI = {
+  nada: "",
+  pañuelo: "🧣",
+  lentes: "🕶️",
+  piercing: "💎"
+};
+
+function emojiAvatar(jugadorOAvatar) {
+  let avatar;
+  if (jugadorOAvatar && jugadorOAvatar.avatar) {
+    avatar = normalizarAvatar(jugadorOAvatar.avatar);
+  } else if (jugadorOAvatar && (jugadorOAvatar.genero || jugadorOAvatar.pelo || jugadorOAvatar.look)) {
+    avatar = normalizarAvatar(jugadorOAvatar);
+  } else {
+    avatar = avatarPorDefecto();
+  }
+  const clave = avatar.genero + "|" + avatar.pelo + "|" + avatar.look;
+  const base = AVATAR_EMOJI_MAP[clave] || "🧑‍🎤";
+  const extra = AVATAR_ACCESORIO_EMOJI[avatar.accesorio] || "";
+  return extra ? base + " " + extra : base;
+}
+
+function htmlAvatarBadge(jugadorOAvatar, claseExtra) {
+  const emoji = emojiAvatar(jugadorOAvatar);
+  const clase = "avatar-musiko" + (claseExtra ? " " + claseExtra : "");
+  return '<span class="' + clase + '" aria-hidden="true">' + emoji + "</span>";
+}
+
+function leerAvatarDesdeFormulario() {
+  const generoEl = document.getElementById("avatar-genero");
+  const peloEl = document.getElementById("avatar-pelo");
+  const lookEl = document.getElementById("avatar-look");
+  const accEl = document.getElementById("avatar-accesorio");
+  return normalizarAvatar({
+    genero: generoEl ? generoEl.value : "elle",
+    pelo: peloEl ? peloEl.value : "corto",
+    look: lookEl ? lookEl.value : "rock",
+    accesorio: accEl ? accEl.value : "nada"
+  });
+}
+
+function actualizarPreviewAvatar() {
+  const preview = document.getElementById("avatar-preview");
+  if (!preview) {
+    return;
+  }
+  preview.textContent = emojiAvatar(leerAvatarDesdeFormulario());
+}
+
+function elegirAvatar(campo, valor) {
+  const ids = {
+    genero: "avatar-genero",
+    pelo: "avatar-pelo",
+    look: "avatar-look",
+    accesorio: "avatar-accesorio"
+  };
+  const id = ids[campo];
+  if (!id) {
+    return;
+  }
+  const hidden = document.getElementById(id);
+  if (hidden) {
+    hidden.value = valor;
+  }
+  const botones = document.querySelectorAll(
+    '.opcion-avatar[data-avatar-campo="' + campo + '"]'
+  );
+  botones.forEach(function (boton) {
+    if (boton.getAttribute("data-avatar-valor") === valor) {
+      boton.classList.add("activo");
+    } else {
+      boton.classList.remove("activo");
+    }
+  });
+  actualizarPreviewAvatar();
+}
+
 function estadoJugadorInicial() {
   return {
   nombre: "",
   nacionalidad: "",
   estilo: "",
   instrumento: "",
+  avatar: avatarPorDefecto(),
   edad: 16,
   gral: 50,
   bandaActual: "",
@@ -271,6 +417,7 @@ function continuarPartida() {
     return;
   }
   jugador = Object.assign(estadoJugadorInicial(), data.jugador);
+  jugador.avatar = normalizarAvatar(jugador.avatar);
   if (!jugador.solista) {
     jugador.solista = normalizarSolista(null);
   } else {
@@ -305,6 +452,7 @@ function actualizarMenuInicio() {
     bloque.style.display = "none";
     if (resumen) {
       resumen.textContent = "";
+      resumen.innerHTML = "";
     }
     return;
   }
@@ -315,11 +463,20 @@ function actualizarMenuInicio() {
     const estado = j.carreraTerminada
       ? "carrera terminada"
       : ("edad " + j.edad);
-    resumen.textContent = j.nombre + " | " + banda + " | " + estado;
+    const avatarMini = htmlAvatarBadge(j, "avatar-musiko-mini");
+    resumen.innerHTML =
+      avatarMini +
+      " <span>" +
+      j.nombre +
+      " | " +
+      banda +
+      " | " +
+      estado +
+      "</span>";
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () { actualizarMenuInicio(); actualizarBotonMute(); });
+document.addEventListener("DOMContentLoaded", function () { actualizarMenuInicio(); actualizarBotonMute(); actualizarPreviewAvatar(); });
 
 const exigenciaBandas = {
   Under: 40,
@@ -3542,6 +3699,7 @@ function irACrearMusico() {
   });
 
   elegirInstrumento(instrumentos[0]);
+  actualizarPreviewAvatar();
 
   transicionarPantallas("pantalla1", "pantalla2");
 }
@@ -3581,6 +3739,7 @@ function comenzarCarrera() {
   jugador.nacionalidad = nacionalidad;
   jugador.estilo = estilo;
   jugador.instrumento = instrumento;
+  jugador.avatar = leerAvatarDesdeFormulario();
   jugador.modo =
     document.getElementById("modo").value === "Intenso"
       ? "Intenso"
@@ -4339,7 +4498,7 @@ function mostrarResumenCarrera() {
   overlay.innerHTML = `
     <div class="resumen-carta">
       <p class="premio-alerta-marca">FIN DE CARRERA</p>
-      <h2>${jugador.nombre}</h2>
+      <h2 class="resumen-nombre-avatar">${htmlAvatarBadge(jugador, "avatar-musiko-resumen")}<span>${jugador.nombre}</span></h2>
       <p class="muted legado">${nivelLegadoCarrera()}</p>
 
       <div class="resumen-media">
@@ -4628,7 +4787,9 @@ function mostrarPantallaPrincipal() {
         <div class="carrera-main">
           <section class="ficha">
             <div class="ficha-top">
-              <div>
+              <div class="ficha-identidad">
+                ${htmlAvatarBadge(jugador)}
+                <div class="ficha-identidad-texto">
                 <p class="banda-actual">
                   ${mostrarLogoBanda(jugador.bandaActual, 44)}
                   ${jugador.bandaActual || "Sin banda"}
@@ -4638,6 +4799,7 @@ function mostrarPantallaPrincipal() {
                   ${jugador.edad} años · ${jugador.fans} fans
                  
                 </p>
+                </div>
               </div>
 
               <p class="gral">

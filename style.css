@@ -1061,6 +1061,10 @@ button.opcion-ritmo.activo {
     display: block;
   }
 
+  .ficha-identidad {
+    margin-bottom: 4px;
+  }
+
   .gral {
     text-align: left;
     margin-top: 12px;
@@ -1203,3 +1207,127 @@ body::before {
   .sticker { opacity: 0.28; font-size: 26px; }
   .sticker-4, .sticker-6, .sticker-8 { display: none; }
 }
+
+
+/* --- Avatar El Musiko --- */
+.campo-avatar {
+  margin-top: 4px;
+}
+
+.avatar-preview-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 14px;
+}
+
+.avatar-musiko {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 214, 120, 0.28), rgba(80, 12, 18, 0.55));
+  border: 2px solid var(--accent, #e8b84a);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 6px 16px rgba(0, 0, 0, 0.35);
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.avatar-musiko-preview {
+  width: 88px;
+  height: 88px;
+  font-size: 46px;
+}
+
+.avatar-musiko-mini {
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  border-width: 1px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.avatar-musiko-resumen {
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+}
+
+.avatar-chip-label {
+  margin: 10px 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ritmo-avatar {
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+}
+
+.ritmo-avatar-acc {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.ritmo-avatar .opcion-ritmo {
+  text-align: center;
+  padding: 10px 8px;
+  font-size: 13px;
+}
+
+.ficha-identidad {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ficha-identidad-texto {
+  min-width: 0;
+}
+
+.ficha-identidad .avatar-musiko {
+  margin-top: 2px;
+}
+
+.resumen-nombre-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+#resumen-partida-guardada {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+@media (max-width: 520px) {
+  .ritmo-avatar-acc {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .avatar-musiko-preview {
+    width: 76px;
+    height: 76px;
+    font-size: 40px;
+  }
+
+  .ficha-identidad {
+    gap: 10px;
+  }
+
+  .avatar-musiko {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+}
+
